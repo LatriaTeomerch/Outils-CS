@@ -579,17 +579,17 @@ In this final section, we'll put your newfound UNIX command-line skills to the t
 
 The `dungeon.sh` script is available in the directory of your teacher 
 ```
-/home/newton/ienm1/chabotv/Cours_CS 
+/home/newton/ienm2021/chabotv/COURS_CS
 ```
 
 
 ---
 
-Now, let's embark on your UNIX adventure! Here is your quest:
+## Now, let's embark on your UNIX adventure! **Here is your quest**:
 
 1. Create a folder `Cours_CS` and a subfolder `Test_unix`  and move inside it
 1. Copy the file `dungeon.sh` from your teacher repository (`
-/home/newton/ienm1/chabotv/Cours_CS 
+/home/newton/ienm2021/chabotv/COURS_CS
 `) 
 1. Try to execute the script 
 1. If needed, change the access right to the file (via `chmod` command) so the file can be executed. 
