@@ -535,61 +535,40 @@ In this part of our UNIX Command Line Interface (CLI) tutorial, we will delve in
 
 ---
 
-## The Smallest Editor: `nano`
+## Text editor
 
-Chances are your distribution includes the `nano` text editor, which is known for its straightforward learning curve. One of its advantages is that it displays all possible commands on the screen, making it beginner-friendly. Give it a try:
+When operating on local machine, you can easily use GUI interface for editing your text. 
+As an example you should be able to use either `gedit` or `vscode` to launch your first script. 
+
+
 
 ```bash
-> nano hello.sh
+> code hello.sh
 ```
+or 
 
+```bash 
+> gedit hello.sh 
+```
 ---
 
 Your terminal will switch to a textual window where you can try a simple "Hello, World!" script. In the UNIX Shell, text is printed using the `echo` command.
 
 ```shell
-  UW PICO 5.09                   File: hello.sh                   Modified
-
 echo "Hello, World!"
-
-^G Get Help ^O WriteOut ^R Read File^Y Prev Pg  ^K Cut Text ^C Cur Pos
-^X Exit     ^J Justify  ^W Where is ^V Next Pg  ^U UnCut Tex^T To Spell
 ```
 
 ---
 
-Once you've saved the file, check for its presence and then ask the terminal to run this script with the `source` command:
+Once you've saved the file (`ctrl +s `), check for its presence and then ask the terminal to run this script with the `source` command:
 
 ```bash
 > source hello.sh
 Hello, World!
->
 ```
 
 ---
 
-## The Two Picks of Unix Enthusiasts: Vi and Emacs
-
----
-
-**Vi** (command `vi`) is a text editor renowned for its speed and versatility in the Unix and Linux world. It's an open-source BSD-licensed project. Vi operates from the command line, offering "Normal" and "Insert" modes. In Normal mode, users navigate and manipulate text efficiently with commands for copying, cutting, pasting, and deleting text. While Vi has a steeper learning curve for beginners, it's known for its powerful features, including advanced navigation, search and replace, macros, and plugins. Saving and exiting are straightforward with commands like `:w` to save and `:q` to exit. Vi's efficiency and command-driven interface make it a favorite among Unix enthusiasts.
-
-
----
-
-**Emacs** (command `emacs`), on the other hand, offers a more user-friendly interface within its own graphical environment. This [open-source GNU project](https://www.gnu.org/software/emacs/) excels in multitasking with multiple open files or "buffers" and provides various modes for specific tasks. Emacs is highly customizable, allowing users to extend its functionality with packages and custom scripts. While its unique keybindings may take time to learn, they offer efficient text manipulation and navigation. Saving and exiting are achieved through key combinations like `C-x C-s` to save and `C-x C-c` to exit.
-
-In the Unix community, there's a long-standing and passionate debate over which editor is superior, reflecting the diversity and rich history of Unix-based systems.
-
----
-
-## VS Code Is the New Black
-
-[Visual Studio Code](https://code.visualstudio.com/) (VS Code, command `code`) is a popular and versatile code editor developed by Microsoft. It stands out for its user-friendly interface and a rich ecosystem of extensions that enhance its functionality. VS Code supports various programming languages and offers features like integrated debugging, version control, and a powerful IntelliSense code completion system.
-
-To install it, refer to the [UNIX installation pages](https://code.visualstudio.com/docs/setup/linux).
-
----
 
 # UNIX CLI part 4/4 :  Test your basics
 
@@ -598,99 +577,22 @@ In this final section, we'll put your newfound UNIX command-line skills to the t
 
 ---
 
-Here's the `dungeon.sh` script to create your dungeons:
-
-```bash
-#!/bin/bash
-
-# Function to choose a random word from an array
-get_random_word() {
-    local array=("$@")
-    local length=${#array[@]}
-    local random_index=$((RANDOM % length))
-    echo "${array[random_index]}"
-}
-
-# Function to generate a random number
-get_random_number() {
-    echo $((RANDOM % 1000))
-}
-
-# Function to create a themed random directory structure
-create_random_dungeon() {
-    local depth=$1
-    local max_depth=$2
-    local max_files=$3
-
-    # Base case: if depth reaches the maximum, max_files is zero, or total_files is greater than 30, return
-    if [ $depth -ge $max_depth ] || [ $max_files -eq 0 ] || [ $total_files -ge 30 ]; then
-        return
-    fi
-
-    local room_names=("cellar" "chamber" "hall" "corridor")
-    local monster_names=("goblins" "troll" "wyvern" "dragon")
-    local loot=("swords" "treasure_chests" "axe")
-    local monster_type=""
-
-    local room_number=$(get_random_number)
-    local room_name=$(get_random_word "${room_names[@]}")
-    local room_dir="${room_name}_${room_number}"
-    mkdir "$room_dir"
-    cd "$room_dir"
-
-    local num_files=$((RANDOM % max_files + 1))
-    for ((i = 0; i < num_files; i++)); do
-        if [ $total_files -ge 30 ]; then
-            break
-        fi
-
-        monster_name=$(get_random_word "${monster_names[@]}")
-        touch "${monster_name}.txt"
-
-        # Determine if this is the monster with a prince/princess
-        if [ "$monster_name" == "goblins" ]; then
-            if [ $((RANDOM % 2)) -eq 1 ]; then
-                monster_type=$(get_random_word "prince" "princess")
-                echo "$monster_type" >"${monster_name}.txt"
-            fi
-        fi
-
-        # Add loot to the file
-        loot_item=$(get_random_word "${loot[@]}")
-        echo "Loot: $loot_item" >>"${monster_name}.txt"
-
-        total_files=$((total_files + 1))
-    done
-
-    for ((i = 0; i < max_files; i++)); do
-        create_random_dungeon "$((depth + 1))" "$max_depth" "$((max_files / 2))"
-    done
-
-    cd ..
-}
-
-# Specify the depth of the directory structure and maximum files per directory
-depth=3
-max_files_per_directory=5
-total_files=0  # Initialize the total files count
-
-# Create the root directory "Dungeon"
-root_dir="Dungeon"
-mkdir "$root_dir"
-cd "$root_dir"
-
-# Start creating the themed random dungeon structure
-create_random_dungeon 0 "$depth" "$max_files_per_directory"
-cd ..
-echo "Themed dungeon structure created in $root_dir"
+The `dungeon.sh` script is available in the directory of your teacher 
 ```
+/home/newton/ienm1/chabotv/Cours_CS 
+```
+
+
 ---
 
 Now, let's embark on your UNIX adventure! Here is your quest:
 
-1. Create a folder `TEST` and move inside it
-1. Create a file named `dungeon.sh` and copy/paste the lines here-above inside
-1. Execute the script once
+1. Create a folder `Cours_CS` and a subfolder `Test_unix`  and move inside it
+1. Copy the file `dungeon.sh` from your teacher repository (`
+/home/newton/ienm1/chabotv/Cours_CS 
+`) 
+1. Try to execute the script 
+1. If needed, change the access right to the file (via `chmod` command) so the file can be executed. 
 1. Count how many `goblins` files there are in the dungeon
 1. Find all the `prince` and `princess` occurrences in the files
 1. Delete the dungeon - without wiping  out the script `dungeon.sh`!
@@ -790,7 +692,6 @@ Congratulations! You've completed this comprehensive UNIX CLI tutorial, and you'
 
 - Recurrent operations can be saved in aliases (`alias`) for short sequences, and in files, names shell-scripts, for long sequences.
 
-- Edit your files seamlessly using `nano`, a beginner-friendly text editor, or step up your game with the versatile `code` editor (Visual Studio Code), offering a wide range of features and customization options.
 
 ---
 
