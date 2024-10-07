@@ -1,6 +1,23 @@
+---
+theme: gaia
+marp: true
+_class: lead
+paginate: true
+---
 
+# **TP Python Débutant**
 
+## Générateur de nombres
 
+---
+
+Le but de ce TP est de creer de A à Z un petit jeu en Python pour découvrir les fonctionnalités basique du language: 
+    - les modules
+    - les variables
+    - les fonctions
+    - les boucles
+
+---
 ### Plan du jeu :
 - Le programme génère un nombre aléatoire entre 1 et 20.
 - L'utilisateur a plusieurs tentatives pour deviner ce nombre.
