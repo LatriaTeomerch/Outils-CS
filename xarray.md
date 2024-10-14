@@ -1,10 +1,14 @@
 ---
 marp: true
-theme: default
 paginate: true
 ---
 
-# Introduction à Xarray
+
+# **Cours Python : Introduction à Xarray**
+
+---
+
+# **Pourquoi  Xarray**
 
 - Xarray est une bibliothèque Python pour la manipulation de données multi-dimensionnelles.
 - Inspirée par **Pandas**, elle facilite l'analyse de données N-dimensionnelles.
@@ -13,12 +17,15 @@ paginate: true
 - **Gère et propage** les métadonnées tout du long des calculs. 
   
 ---
-# Ajout de  bibliothèque à l'environnement existant
+## **Ajout de  bibliothèque à l'environnement existant**
 
 Pour ce TP il vous faudra installer `xarray`, `matplotlib` et `netCDF4`. 
 
 Pour cela : 
 - Activer l'environnement virtuel créé lors du dernier TP.  
+ 
+
+
 - Faire ensuite 
 ```sh 
   pip install xarray matplotlib netCDF4
@@ -27,7 +34,7 @@ Pour cela :
 
 ---
 
-# Ouverture d'un fichier Netcdf 
+# **Ouverture d'un fichier Netcdf** 
 
 ```python 
 import xarray as xr 
@@ -36,7 +43,7 @@ ds = xr.open_dataset("/home/newton/ienm2021/chabotv/COURS_CS/arome_forecast_2024
 print(ds)
 ```
 ----
-# Résultat de l'ouverture 
+# **Résultat de l'ouverture**
 ```sh 
 <xarray.Dataset> Size: 69MB
 Dimensions:            (latitude: 1200, longitude: 1600, time: 4)
@@ -60,7 +67,7 @@ Attributes:
 ```
 
 ----
-# Qu'avons nous chargé ? 
+# **Qu'avons nous chargé ?** 
 Un fichier contenant trois variables : 
  - **t2m** (temperature)
  - **r2** (humidité spécifique)
@@ -75,11 +82,11 @@ Dans le *vocabulaire* xarray, une variable particulière d'un *Dataset* s'appel 
 
 
 ----
-# Exercice 1
+# **Exercice 1**
 En consultant les attributs de la variable `t2m`, retrouver en quelle unité est stockée la temperature. 
 
 ---
-# Solution 1
+# **Solution 1**
 ```python 
 print(ds["t2m"])
 ```
@@ -104,7 +111,7 @@ print(ds["time"].attrs)
 ```
 
 ----
-# Selection de données 
+# **Selection de données** 
 Il y a deux manières principales de selectionner des données : 
 - par valeur  
 ```python
@@ -130,7 +137,7 @@ t2m_area = ds["t2m"].sel(latitude=slice(42,44),longitude=slice(0,2))
 En effet, les latitudes sont rangées de manière décroissante dans ce fichier. 
 
 ----
-# Exercice 2
+# **Exercice 2**
 
 1. Retrouver la position (en latitude/longitude) du point de grille situé à l'index (198,705) de l'exemple précédent. 
 
@@ -143,7 +150,7 @@ t2m_area = ds["t2m"].sel(latitude=slice(44,42),longitude=slice(0,2))
 ```
 
 ----
-# Solution 2 
+# **Solution 2**
 
 1. Via `print(t2m_by_index)` on obtient les coordonées `[51.42,-0.95]`. En entrant ces coordonnées dans google maps, on s'aperçoit qu'il s'agit de Reading et plus spécifiquement du site du  CEP. 
 
@@ -160,7 +167,7 @@ On a selectionné une grille de 200x200, soit 40 000 points de grille.
 
 ----
 
-# Calculs sur les données 
+# **Calculs sur les données** 
 
 On peut directement faire des calculs sur un *Dataset* ou sur un *DataArray*
 ```python
@@ -175,7 +182,7 @@ np.mean(ds["t2m"],axis=[0]) <=> ds["t2m"].mean(dim="time")
 ```
 
 ----
-# Exercice 3
+# **Exercice 3**
  
 - Quelles sont les dimensions de vos variable après la moyenne temporelle ? 
 
@@ -184,16 +191,18 @@ np.mean(ds["t2m"],axis=[0]) <=> ds["t2m"].mean(dim="time")
   - longitude : [0, 2]
 
 ----
-# Solution 3 
+# **Solution 3** 
 1. Les 3 variables (`t2m`, `r2`, `altitudes`)  ont uniquement les dimensions spatiales, i-e `latitude` et `longitude`. 
 2. 
 ```python
 print(f"La moyenne spatio temorelle sur la zone est : {t2m_area.mean().values}")
 ```
 ----
-# Visualisation rapide  (via matplotlib) 
+# **Visualisation rapide  (via matplotlib)** 
 
 **Attention** : On peut uniquement utiliser la fonction de plot sur les **DataArray**.
+
+![bg width:115% right:40%](./figure/Temperature.png)
 
 ```python 
 import matplotlib.pyplot as plt 
@@ -203,11 +212,11 @@ plt.show()
 *Bonus* : On a directement accès aux coordonnées sur le plot
 
 ----
-# Exercice 4
+# **Exercice 4**
 
 - Afficher l'altitude sur un carré d'un degré de côté centré autour de Grenoble. 
 ----
-# Solution 4
+# **Solution 4**
 
 Recherche des coordonnées de grenoble [45.19,5.73] via google maps. 
 
@@ -228,11 +237,11 @@ plt.show()
 
 ----
 
-# Solution 4 : rendu 
+# **Solution 4 : rendu** 
 ![width:450px](figure/altitude_2D.png) ![width:600px](figure/altitude_3D.png)
 
 ----
-# Utilisation des masques pour calculer sur des zones précises 
+# **Utilisation des masques pour calculer sur des sous domaines** 
 
 Avec *xarray* (et numpy) On peut aisément créer des masques et les utiliser. 
 Cela peut ce faire comme dans l'exemple suivant avec `where` ou par simple multiplication. 
@@ -250,11 +259,11 @@ print(f" Temperature moyenne des points ayant une altitude supérieure à 1000 m
 
 ----
 
-# Exercice 5
+# **Exercice 5**
 Faite une fonction permettant de  calculer la température moyenne d'une zone donnée pour les points situés au dessus d'une certaine altitude. 
 
 ---
-# Solution 5
+# **Solution 5**
 ```python 
 def conditional_mean(ds, lats, lons, altitude): 
     """
@@ -271,10 +280,10 @@ altitude = 500
 conditional_mean(ds, lats, lons, altitude)
 ```
 ---
-# Exercices (Optionel)
+# **Exercices (Optionel)**
 
 
-1. Améliorer la fonction de l'exercice 5 de telle sorte à prendre en entrée la variable d'intérêt dans le dataset (par ex. `r2`)
-2. Combien y-a-t'il d'occurence de température négative (en °C) dans le dataset entier ? Quel pourcentage de cas cela représente-t-il ? 
+1. Améliorer la fonction de l'exercice 5 de telle sorte à prendre en entrée la variable d'intérêt dans le dataset (par ex. `r2` ou `t2m`)
+2. Combien y-a-t'il d'occurences de température négative (en °C) dans le dataset entier ? Quel pourcentage de cas cela représente-t-il ? 
 3. Calculer la moyenne glissante  (sur 3h) pour la zone autour de Grenoble. (Indication : utiliser la fonctionnalité `rolling` de  *xarray*) 
 
