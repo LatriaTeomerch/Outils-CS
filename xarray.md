@@ -280,10 +280,28 @@ altitude = 500
 conditional_mean(ds, lats, lons, altitude)
 ```
 ---
-# **Exercices (Optionel)**
+# **Exercices - A rendre **
 
 
-1. Améliorer la fonction de l'exercice 5 de telle sorte à prendre en entrée la variable d'intérêt dans le dataset (par ex. `r2` ou `t2m`)
-2. Combien y-a-t'il d'occurences de température négative (en °C) dans le dataset entier ? Quel pourcentage de cas cela représente-t-il ? 
-3. Calculer la moyenne glissante  (sur 3h) pour la zone autour de Grenoble. (Indication : utiliser la fonctionnalité `rolling` de  *xarray*) 
+> 1. Améliorer la fonction de l'exercice 5 de telle sorte à prendre en entrée la variable d'intérêt dans le dataset (par ex. `r2` ou `t2m`)
+
+> 2. Combien y-a-t'il d'occurences de température négative (en °C) dans le dataset entier ? Quel pourcentage de cas cela représente-t-il ? 
+
+>3. Calculer la moyenne glissante  (sur 3h) pour la zone autour de Grenoble. (Indication : utiliser la fonctionnalité `rolling` de  *xarray*) 
+
+Le dossier `/home/newton/ienm2021/chabotv/COURS_CS/data` contient un fichier `grid_arpege.nc`. 
+Ce fichier contient une unique variable `glob0125` donnant une information d'altitude sur le domaine AROME pour ARPEGE (modèle global). La résolution de l'orographie est ici de 0.125° (~12.5 km), résolution bien plus lâche que celle d'AROME (~1.3km). 
+
+>4.a. Faire une figure montrant l'orographie des deux modèles (AROME et ARPEGE). Qu'observe-t-on ? Que pouvez vous dire de l'altitude maximum sur chacune de ces cartes ?   
+
+>4.b Interpoler l'orographie d'ARPEGE sur celle d'AROME (vous pouvez utiliser `interp_like` de xarray). 
+Quelle est le maximum de différence (en valeur absolue) entre les deux orographies ? 
+
+>4.c Même question mais en interpolant l'orographie d'AROME sur l'orographie d'ARPEGE. 
+
+
+
+
+
+
 
