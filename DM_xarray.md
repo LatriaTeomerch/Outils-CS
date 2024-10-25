@@ -2,16 +2,17 @@
 # Outils pour le calcul scientifique 
 # Exercice - A rendre pour le 12/11/2024 
 
-## Consignes 
+## Consignes
 
-Par groupe de 2 (au maximum) il vous est demandé de faire le TP suivant. 
-Vous devrez renvoyer : 
+Par groupe de 2 (au maximum) il vous est demandé de faire le TP suivant.
+Vous devrez renvoyer :
 - Le code utilisé pour répondre aux questions (idéalement nous devrions être capable de le faire tourner sans modifications)
-- La réponse aux différentes questions
+- La réponse aux différentes questions.
+  
 
-Ce TP sera comptabilisé en point bonus dans la note finale de la partie informatique. 
+Ce TP sera comptabilisé en point bonus dans la note finale de la partie informatique.
 
-Pour mémoire les adresses mail de vos enseignants sont 
+Pour mémoire les adresses mail de vos enseignants sont :
 - Thibault.Marzlin@cerfacs.fr
 - vincent.chabot@meteo.fr
 - pouech@cerfacs.fr
