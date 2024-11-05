@@ -1,45 +1,34 @@
 ---
-Title: Walking the path of Object Oriented Programming, with a Guitar.
-Date: 2023-06-20
-Author: A. Dauptain
-Slug: about-objects
-Summary: A primer on objects, their advantages, and their dangers in scientific computing. The apparition  of an object in a code is illustrated by a digital guitar example.
-Tags: Python, Tech. Debt, Handbook
+theme: leibniz
+_class: lead
+marp: true
+paginate: true
 ---
-[TOC]
 
+# **Walking the path of Object Oriented Programming, with a Guitar.**
 
-![cli](https://upload.wikimedia.org/wikipedia/en/9/97/Eric_Clapton_OMCOMR.jpg)
-
-*The album cover of the guitarist [Eric Clapton's "One more car, One more rider"](https://en.wikipedia.org/wiki/One_More_Car,_One_More_Rider)*
-
+---
 
 In the realm of scientific software development, many programmers lack a strong background in computer science. This particular niche emphasizes expertise in areas such as physical modeling, numerical methods, applied mathematics, and high-performance optimization. As a result, most practitioners in this community tend to stick to the familiar procedural programming approach. However, when faced with the concept of "objects" in object-oriented programming, newcomers often encounter questions like whether they should use objects, if they offer advantages over procedural approaches, how to implement them effectively, and what potential pitfalls to watch out for. Unfortunately, the answer to these questions is often ambiguous and depends on the specific situation. 
 
+---
+
 If you cannot afford to dive deep into computer science just yet, we'll attempt to provide a brief overview of this issue with an example in ten minutes... with a guitar.
 
-
-## Too Long; Don't read
-
-This text emphasizes the importance of focusing on how to use a function or object rather than its internal implementation. This approach aligns with the [dependency inversion principle](https://en.wikipedia.org/wiki/Dependency_inversion_principle), which suggests that the code's usage should be prioritized, and implementation details can be addressed later. Developers should collaborate closely with beta testers to refine the final usage (or Application Programming Interface,API ), especially if they are considering advanced programming concepts.
-
-The text also discusses the trade-off between multi-purpose APIs with verbose explicit calls (low-level) and case-specific APIs with very concise calls (high-level). To cater to different user needs, it advocates for progressive APIs that incorporate both functional low-level functions and specialized high-level objects. This allows users to choose the level of abstraction that suits their requirements.
-
-![sk1]({static}/images/about-objects/purpose_vs_concision.png)
-
-*The fewer situations an Application Programming Interface have to handle, the more concise it can be. The developer must weight how much the code should be specialized.*
-
-All the code presented here can be downloaded from  gitlab.com [here](https://gitlab.com/cerfacs/notebooks/-/blob/master/programming_sessions/about_objects.py).
-
+---
 ## A brief intro to Object oriented Programming 
 
-Object-oriented programming (OOP) is a programming paradigm that organizes code around objects, which are instances of classes. It promotes encapsulation, inheritance, and polymorphism for modular and reusable code. OOP originated in the 1960s with Simula and gained popularity through languages like C++ in the 1980s. It has become a fundamental concept in modern software development, offering advantages such as code reusability, modularity, and easy modeling of real-world entities. It promotes efficiency, code organization, extensibility, and flexibility through encapsulation, inheritance, and polymorphism.
+Object-oriented programming (OOP) is a programming paradigm that organizes code around objects, which are instances of classes. 
+It promotes encapsulation, inheritance, and polymorphism for modular and reusable code.
 
+OOP originated in the 1960s with Simula and gained popularity through languages like C++ in the 1980s. It has become a fundamental concept in modern software development, offering advantages such as code reusability, modularity, and easy modeling of real-world entities. It promotes efficiency, code organization, extensibility, and flexibility through encapsulation, inheritance, and polymorphism.
+
+---
 However, while object-oriented programming (OOP) has benefits like code reusability and modeling real-world entities, it can introduce complexity and overhead. Inheritance can lead to tight coupling, and OOP may not be suitable for all problem domains. Additionally, beginners may find it challenging, and an overemphasis on class hierarchies can result in inflexible designs.
 
+---
 
-## Trying to play a song
-
+## Trying to play a song : 
 
 ### Just one note
 
@@ -49,6 +38,8 @@ Now, shall we start a program with simple idea in mind:
 > Hey, can I make this computer play a note A440?
 
 With a bit of net-surfing we get this:
+
+---
 
 ```python
 
@@ -83,13 +74,16 @@ sdplay(
     samplerate=SAMPLING_FREQ)
 
 ```
+---
 
 It  generates a pure beep waveform with a specified frequency and duration using the `NumPy` library. The `pure_beep()` function takes optional parameters for amplitude, frequency, and duration, and returns an array of waveform samples. 
 
 The `sdplay()` function from the `sounddevice` library is then used to play the generated waveform with a frequency of 440 Hz and a duration of 1 second. The blocking=True argument ensures that the program waits for the sound to finish playing before continuing. This is a simple way to generate and play a pure beep sound.
 
+
 As a pure sine is quite horrible to hear, we can make it nicer with harmonics:
 
+---
 ```python
 import numpy as np
 from sounddevice import play as sdplay
@@ -127,9 +121,13 @@ sdplay(
     samplerate=SAMPLING_FREQ)
 ```
 
+---
+
 This program extends the previous one by introducing a `fat_beep()` function that generates a waveform with harmonics using additive synthesis. It includes two new parameters: `harms` for the number of harmonics to include and `decay` for the decay factor applied to each harmonic amplitude. The result is a richer, more complex sound compared to the pure beep waveform. 
 
 If you search a bit on the web, you will probably discover the [Karplus-Strong method](https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis) used in old music synthetizers, to do the same:
+
+---
 
 ```python
 def kpst_pluck(freq: int, duration: float=1.0) -> np.array:
@@ -179,7 +177,7 @@ sdplay(
     blocking=True, 
     samplerate=SAMPLING_FREQ)
 ```
-
+---
 We have now three functions sharing the same **signature**:
 
 ```python
@@ -193,15 +191,9 @@ However their content differ a lot. One could be tempted to merge them, but righ
  - You procrastinate the critical stuff, delaying your work.
  - It is a [premature optimization](https://en.wikipedia.org/wiki/Program_optimization), a code smell with plenty of drawbacks.
 
-
+---
 
 ### A song on one single string
-
-
-![cli](https://images.unsplash.com/photo-1471478331149-c72f17e33c73?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80)
-
-*Photo [Gabriel Gurrola](https://unsplash.com/@gabrielgurrola) in [Unsplash](https://unsplash.com). A close-up of an acoustic guitar, with its six strings and twenty frets diviting the guitar neck.*
-
 
 > We got the sound on, let's build a guitar
 
@@ -216,7 +208,11 @@ A |--7------7--10---7---5--3--------2--------|
 E |------------------------------------------|
 ```
 
+---
+
 Reading this is easier than you could think. First, there are numbers  only on line "A", meaning the song can be played on a single string tuned to the note "A", the second one when you look at a guitar you are holding.
+
+---
 
 The [standard tuning](https://en.wikipedia.org/wiki/Guitar_tunings) is :
 
@@ -229,6 +225,9 @@ The [standard tuning](https://en.wikipedia.org/wiki/Guitar_tunings) is :
 |5 (A) |	110.00 Hz |	A2|
 |6 (E) |	82.41 Hz |E2|
 
+
+---
+
 The number are positions on the fretboard called frets. There are 12 lines on the guitar neck dividing the string into 12 [semitones](https://en.wikipedia.org/wiki/Semitone). Being one semitone higher mean a frequency multiplied by 1.0595 (256/243 exactly).  Therefore, the 7th fret of string A  is 7 semitone higher than the tuning frequency : $110 * 1.0595^7 ~= 164.81$, *i.e* the note E3. The position of each number is an approximation of when it should be played.
 
 Now what we would like is a way to control the program close to this input:
@@ -238,6 +237,7 @@ time=       1         2         3         4
   0123456789012345678901234567890123456789012  
 A |--7------7--10---7---5--3--------2--------|
 ```
+---
 
 We can try something like:
 
@@ -264,6 +264,7 @@ song = add_note(song, n2, 3.4)
 
 sdplay(song, blocking=True, samplerate=SAMPLING_FREQ)
 ```
+---
 
 Let's build first  plucked string function:
 
@@ -287,6 +288,8 @@ def guitar_string(fret: int, tuning: float = 82.41, duration: float = 2.0) -> np
 ```
 
 We add the functions to declare a void song, and a second to add notes on this base:
+
+---
 
 ```python
 
@@ -327,8 +330,11 @@ def add_note(base: np.array, note: np.array, start: float) -> np.array:
 
     return base_out
 ```
+---
 
 If you try these, you should be able to synthetize the first bar of "seven nations army"
+
+---
 
 #### How an object can show up
 
@@ -342,7 +348,9 @@ n3 = guitar_string(fret=3, tuning=110., duration=0.1)
 n2 = guitar_string(fret=2, tuning=110, duration=0.1)
 ```
 
-There are a lot of repetitions. While the duration could be often changed to build a song, the tuning sould not. Moreover, it is only by looking at the tuning that we read it is the A string. 
+There are a lot of repetitions. While the duration could be often changed to build a song, the tuning should not. Moreover, it is only by looking at the tuning that we read it is the A string. 
+
+---
 
 We can make this part of the API clearer like this:
 
@@ -356,6 +364,8 @@ n2 = string_A.pluck(fret=2, duration=0.1)
 ```
 
 The `string_A` is an object `GuitarString()` set to 110Hz tuning. This is called an *instance* of the object.  `.pluck()` is a method of the object which replaces the `guitar_string()` function. What makes this object unique is its internal information, the *attribute* `tuning`.
+
+---
 
 How do we get this object-maker `GuitarString()`? We define a **class**:
 
@@ -372,20 +382,26 @@ This **class** features an initialization (`__init__()`) **method**, and the wan
 
 The API is closer to our story "let's play a one string" song, and Yay! we made an object. But let's see the dark side we introduced too.
 
+---
+
 #### The cost of an object : mental load 
 
 In our story, we looked at one bar of the song. If we are doing this on a larger program, the calls to `foo.pluck()` will be stored far from the instanciation `foo=GuitarString()`. Here, only a good descriptive naming (`string_A`) helps to identify what string is played. 
 
 Try to imagine now dealing , not with this nice guitar string, but with an abstract concept you never heard before today, like a "Base for Proper Orthogonal Decomposition on abritrary meshes" called  `base()`. As a reader you will need to "learn" the concept before being able to understand the code.
 
+---
+
 These issues are unknown in the realm of pure functionnal programming, since the author is explicitely writing all inputs and outputs. Finally, both ways have weaknesses:
 
 - Functionnal API, with many lines full of inputs, potentially very slow to read, which lead us to an object.
 - Object Oriented API, with fewer lines and inputs repetitions, potentially coming with a large mental load, making functions desirable again.
 
+---
+
 ### A Chord-based song
 
-Our popular songs are made of chords, i.e. group of notes played together. The harmony between the notes suggest emotions to the listener. Let's try a chord-based song, with the first bar of "The House of the Rising Sun", which loops over the progression Am,C,D,F. 
+Our popular songs are made of chords, i.e. group of notes played together. Let's try a chord-based song, with the first bar of "The House of the Rising Sun", which loops over the progression Am,C,D,F. 
 
 | Chord | Plucks |
 |---|---|
@@ -393,7 +409,7 @@ Our popular songs are made of chords, i.e. group of notes played together. The h
 | C | `X32010`|
 | D | `XX0232`|
 | F | `133211`|
-
+---
 The guitar notation above, `X0221O` is a condensed version of the previous one:
 
 | Name | code | Str. E |Str. A |Str. D |Str. G |Str. B |Str. e |
@@ -402,7 +418,7 @@ The guitar notation above, `X0221O` is a condensed version of the previous one:
 
 We must now play several strings at once.
 
-#### Functional version
+---
 
 First, see this Am chord using functions:
 
@@ -428,7 +444,7 @@ chord_Am = add_note(chord_Am, e_Of, 0.0)
 These ten lines are a bit verbose, but easily readable for one chord.
 However a real song involves easily 6 to 8 chords. This would mean 60 to 80 lines. 
 
-#### Using the GuitarString object
+---
 
 Now with the object we just created:
 
@@ -458,10 +474,12 @@ chord_Am = add_note(chord_Am, B_1f, 0.0)
 chord_Am = add_note(chord_Am, e_Of, 0.0)
 ```
 
+---
 Now we tune the 6 strings before the song, and never state a frequency again. There are however more lines because the code states more than just four frequencies.
 The API improvement is a bit lost now we are dealing with multiple chords.
 
-#### Moving to a guitar objet
+---
+##### Moving to a guitar objet
 
 Let's create an object more handy to play chords, starting again from the API:
 
@@ -475,6 +493,8 @@ chord_F = guitar.pluck([1,3,3,2,1,1],1.)
 
 The `Guitar` object takes a list of tunings. Then the method `.pluck()` returns the addition of plucked strings.
 With this solution, a 8 chords song would require 8 lines, plus the instrument tuning.
+
+---
 
 How could we implement this?
 
@@ -495,10 +515,13 @@ class Guitar:
 
 This `Guitar` object stores only a list of `GuitarString` objects.  Then its `.pluck()` methods superimpose the output of `GuitarString.pluck()`. 
 
+---
+#
 In this example, we are using [object composition](https://en.wikipedia.org/wiki/Object_composition): an object made of other objects.
 
 This object is a bit fragile for now, since the user must take care of providing 6 items lists each time. This crudeness is also a good think because you could easily use it for a Bass or a Ukulele.
 
+---
 
 To play "the House of the rising sun" we can now try:
 
@@ -509,6 +532,7 @@ song = add_note(base, chord_c,1)
 song = add_note(base, chord_d,2)
 song = add_note(base, chord_f,3)
 ```
+---
 
 ## Observations on objects
 
@@ -527,6 +551,8 @@ n3 = guitar.pluck([None, 3, None, None, None, None],  duration=0.1)
 n2 = guitar.pluck([None, 2, None, None, None, None], duration=0.1)
 ```
 
+---
+#
 This new object, handy for chords songs, is a bit clunky for our "Sevens nation army", with many repetitions of `None` standing for "do not play this string".
 
 We could of course extend the API of Guitar. A dedicated generic method like this would adapt to 4 or 6 or even 8 strings intruments:
@@ -534,6 +560,7 @@ We could of course extend the API of Guitar. A dedicated generic method like thi
 ```python
 n7 = guitar.single_pluck(7, string_index=1, duration=0.1)
 ```
+---
 
 However this argument `string_index=1` is not really clear to specify the second string. We could instead create methods called upon the name of strings:
 
@@ -547,9 +574,14 @@ However setting in stone the tunings of strings means a great loss of flexibilit
 
 In the end, it would be hard to create a `Guitar` able to deal nicely with the two situations without loosing flexibility nor readability.  
 
-### Getting the best of everything : A progressive API
+---
+
+# Getting the best of everything : A progressive API
+
 
 We have just seen our best object cannot be adapted to all situations, but this is fine : the guitar example provided several solutions to play sounds:
+
+---
 
 | Name | Type | Level | Situation |
 |---|---|---|---|
@@ -560,19 +592,17 @@ We have just seen our best object cannot be adapted to all situations, but this 
 |  `fat_beep()`| atomic function | Very Low | Playing  a sound |
 |  `pure_beep()`| atomic function | Very Low | Playing  a sound |
 
+---
 This API is "progressive": new users can use it at high level while advanced users with better awareness have access to lower level functions. This freedom does not require duplicated code. Indeed, if you read the sources again, you will see each new level is build on top of the previous level.
 
-![sk2]({static}/images/about-objects/purpose_vs_concision2.png)
-
-*Our four levels of APIs on the initial sketch. Nobody ever said a single solution should fit all needs.*
-
-
+---
 ### Some common mistakes
 
 #### Unnecessary statefulness
 
 A statefull code means that some properties evolves during the call. As objects are, before anything, data storages, they often becomes stateful. See for example this scenario with a `TunableGuitar()` object:
 
+---
 ```python
 # A default instrument is created
 guitar = TunableGuitar()
@@ -594,9 +624,12 @@ guitar.tuning([41.203, 55, 73.416, 97.99])
 guitar_note_042 = guitar.pluck([2, None, None, None, None, None], duration=0.1)
 ```
 
+---
+
 Upon closer examination, we can notice that the second `.tuning()` method was called on the wrong instrument. Consequently, the sound produced by `guitar_note_042` is incorrect, but the root cause lies in a different line of code. Identifying such bugs can be time-consuming and challenging. 
 **In a stateful API, it is easy to accidentally modify the state** (i.e., the values of internal `self` attributes) without realizing it, especially when copy-pasting lines of code.
 
+---
 
 The implementation of `TunableGuitar()` is as follows:
 
@@ -618,12 +651,14 @@ class TunableGuitar:
         return note
 ```
 
+---
+
 One issue with this implementation is that the initialization `__init__()` method creates a object without strings. The user *must learn* to use once the `.tuning()` method before `.pluck()`. **A careless implementation can leave room for broken objects, i.e. whose internal state is messed up.**. You can read more about this with [this notebook dedicated to desynchronized objects](https://gitlab.com/cerfacs/notebooks/-/blob/master/programming_sessions/Python_Classes_Basics.ipynb).
  
 
 However, a stateful object is often necessary. The key is to ensure that its statefulness is both explicit and natural to the user. On the other hand, If you want to stay on the safe side, read about [Immutable Data Classes](https://realpython.com/python-data-classes/#immutable-data-classes), a very safe storage for your data : attributes  are set in stone at the initialization and cannot change afterward.
 
-
+---
 
 #### Choosing the wrong audience 
 
@@ -636,7 +671,10 @@ g_001 = guitar.pluck([None, 7, None, None, None, None], duration=0.1)
 b_012 = bass.pluck([2, None, None, None], duration=0.1)
 ```
 
+---
+
 This approach eliminates the need for manual tuning, offering simplicity and convenience. Let's examine the implementation:
+
 
 ```python
 class StringInstrument(ABC):
@@ -660,7 +698,7 @@ class BassInstrument(StringInstrument):
     def __init__(self):
         super().__init__([41.203, 55, 73.416, 97.99])
 ```
-
+---
 While this design functions well for those familiar with OOP and Python, individuals lacking a strong understanding of OOP may find elements like `ABC`, `super`, and the nested `GuitarInstrument(StringInstrument)` confusing. There is worse : creating a new instrument, such as a `UkuleleInstrument`, is accessible only to those well-versed in OOP.
 
 Furthermore, this example highlights another code smell:
@@ -673,6 +711,7 @@ guitar3 = GuitarInstrument()
 
 Here, all instances of the object are identical, raising concerns about the redundancy and lack of uniqueness within the API.
 
+---
 
 ## Further reads
 
@@ -681,6 +720,7 @@ Object-oriented programming encompasses a vast and diverse field with numerous v
 
 When it comes to the Dos and Don'ts of OOP, these principles were distilled by [Robert C. Martin](http://cleancoder.com/products) into 6 STUPID concepts and 5 SOLID concepts, which are outlined as follows.
 
+---
 
 ### STUPID concepts in OOP
 
@@ -700,6 +740,8 @@ D - [Duplication](https://en.wikipedia.org/wiki/Duplicate_code): Code duplicatio
 
 The STUPID concept serves as a reminder to avoid these common pitfalls in OOP design and development to ensure more maintainable, flexible, and testable code.
 
+---
+
 ### Solid Concept in OOP
 
 The [SOLID](https://en.wikipedia.org/wiki/SOLID) principles are a set of five design principles that guide software developers in creating maintainable and flexible object-oriented code. Each letter in SOLID represents a specific principle:
@@ -716,6 +758,7 @@ D - [Dependency Inversion Principle](https://en.wikipedia.org/wiki/Dependency_in
 
 The SOLID principles promote modularity, reusability, testability, and maintainability in OOP. By adhering to these principles, developers can create code that is easier to understand, extend, and maintain, leading to more robust and flexible software systems.
 
+---
 
 ## Takeaways
 
@@ -729,4 +772,3 @@ After reading this, here are the key takeaways to remember:
 
 
 
-*Parts of this text were corrected or reduced using a LLM*.
