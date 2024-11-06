@@ -27,6 +27,19 @@ footer: Outils pour le calcul scientifique 2024 - Introduction à git -  Vincent
 # **Introduction à GIT**
 
 ---
+# **Objectifs de la séance**
+Avoir un premier aperçu (par la pratique) des commandes principales de git. 
+Cette mise en pratique sera fait sur le dépot du miniprojet du groupe. 
+Le but pour les étudiants sera de manipuler le dépot et d'ajouter divers fichiers/informations : 
+- Les slides des cours précédents,  
+- Des informations sur le projet. 
+  
+Pour les séances suivantes (et le miniprojet) git sera utilisé afin de travailler en groupe. 
+
+---
+
+
+
 # **Pourquoi utiliser Git ?**
 
 - **Gestion des versions et de l'historique d'un projet :**
@@ -74,6 +87,10 @@ Pour ces raisons il est devenu **un outil incontournable** dans presque tous les
 - Proposent des fonctionnalités supplémentaires (**Issues**, **Merge Requests / Pull Requests**,  **Intégration continue (CI/CD)** )
 
 ---
+<!-- _class: title -->
+# **Partie pratique**
+
+---
 # **Première étape : Configuration globale**
 
 
@@ -92,57 +109,28 @@ git config --global --unset http.proxy
 ```
 
 ---
-# **Seconde étape : Création/Clonage d'un projet**
+# **Création/Clonage d'un projet**
 
 ## A. Connecter vous à [git.meteo.fr](git.meteo.fr) (via vos identifiant LDAP)
 > login : chabotv 
 > password : NeJamaisDonnerSonPassword
-## B. Aller sur le dépot
-<span style="color:red;"> On fait cloner le dépot avec le cours ?
- Ou on leur fait créer un projet sur git.meteo.fr (dans lequel ils mettront chacun leurs TP) ? Ou un par groupe (comme ça on a directement les interactions) ? 
- Ou on leur fait cloner le projet avec le cours et on leur fait mettre un nouveau remote qui sera leur répo à eux  ? </span>
-Comme ça ils auront tous le cours et pourront récupérer les slides au fur et à mesure ?
-
----
-# Clonage d'un projet
-
-On leur crée le dépot par projet (au préalable).Le HandsOn va consister à cloner le répo puis chaque élève est responsable d'ajouter une partie des slides du cours sur le dépot.
-On aura donc : 
-  - Un peu de linux (cp ...)
-  - clone/log/status/add/commit/push/pull
-  - Un premier push qui se passe bien pour une partie 
-  - Un (voir plusieurs) pull à faire pour les autres 
-
-On introduit ensuite le concept de branche et d'issues (et 4 tâches indépendantes)
-  + Readme (description du projet)
-  + Quelques commandes utiles (un autre .md) (alias env, path des données)
-  + Ajout d'un fichier .gitignore
-  + Correction du DM Xarray ? 
-
----
-# Création un nouveau projet 
+## B. Aller sur le dépot du projet et cloner le dépot 
 
 <div class="same_columns">
 <div>
 
-Aller sur créer un nouveau proje(par ex nommé  `outils_cs` et créez en un dans votre espace personnel (sous `enm/eleves/ienm_2024-2027/votre_nom`). 
-
-Une fois le projet créer, mettez vous dans le répertoire souhaité (sur votre poste de travail) et `cloner` ce projet 
-
-```sh 
-git clone https://git.meteo.fr/enm/eleves/
-ienm_2021-2024/chabot_vincent/outils_cs.git
-```
+![width:300](figure/demoProject.png)
 
 </div>
 <div>
 
-![](./figure/Project.png)
-![](./figure/clone.png)
+![width:400](figure/clone.png)
 
+```
+git clone https://git.meteo.fr/enm/eleves/ienm_2024-2027/MONPROJECT.git
+```
 </div>
 </div>
-
 
 
 ---
@@ -169,22 +157,23 @@ Copier le token généré (il ne vous sera pas redonné).
 </div>
 </div>
 
-### 3. Vous pouvez ensuite l'ajouter en modifiant le fichier `.git/config`
+###  Vous pouvez ensuite l'ajouter en modifiant le fichier `.git/config` 
 ```
 [remote "origin"]
-        url = https://git.meteo.fr/chabotv/MyProject.git
+        url = https://git.meteo.fr/MyPath/MyProject.git
 ```
 doit etre changé en 
 ```
 [remote "origin"]
-        url = https://git.meteo.fr:MyTOKEN@git.meteo.fr/chabotv/MyProject.git
+        url = https://git.meteo.fr:MyTOKEN@git.meteo.fr/MyPath/MyProject.git
 ```
 
 ---
 
 # **B. Consulter l'historique du projet et première tâche**
 
-Commencer par regarder l'historique de votre projet 
+Commencer par regarder l'historique de votre projet. 
+Pour cela placer vous dans le répertoire de votre projet et faites : 
 ```sh 
 git log
 ``` 
@@ -193,7 +182,7 @@ git log
 Maintenant vous allez tous modifier localement votre projet 
 Pour cela : 
 - Créer un dossiers `slides`
-- Choisissez chacun un pdf différent et mettez le dans le dossier slides 
+- Choisissez chacun (au sein du groupe) un pdf différent et mettez-le dans le dossier slides. 
   
 > Question : Est-ce que l'historique de votre projet a changé ? 
 
@@ -207,9 +196,9 @@ Vous deviez avoir ce type de résultat
 
 ![](./figure/Status.png)
 
-Cela vous renseigne que vous avez modifié le Readme.
+Ici cela me renseigne que le fichier Readme.md a été modifié.
 
-> Est-ce que votre fichier a été modifié sur `git.meteo.fr` ? 
+> Est-ce que le fichier que vous avez ajouté à votre dépot a été ajouté au projet sur `git.meteo.fr` ? 
 > Que comprenez-vous du message renvoyé par la commande ? 
 ---
 
@@ -219,12 +208,12 @@ Cela vous renseigne que vous avez modifié le Readme.
 On va "ajouter" les modifications apporté au fichier et  associer un message de "suivi". 
 
 ``` 
-git add LeNomDeMonFichier
+git add slides/LeNomDeMonFichier.pdf
 git commit -m "Mon message décrivant les changements"
 ```
 
 > Votre fichier apparaît-il sur votre dépot sur `git.meteo.fr`? 
-> Consulter l'historique de votre projet (via `git log`). De même consulter l'état du dépot local (`git status`).
+> Consulter l'historique de votre projet (via `git log`). De même consulter l'état du dépot local (`git status`). Que constatez-vous ? 
 
 ---
 # **E. Pousser les modifications vers la plateforme**
@@ -234,12 +223,12 @@ Maintenant nous pouvons pousser les modifications sur la plateforme.
 git push
 ```
 
-Pour le premier qui **pousse**  cela devrait bien se passer. <span style="color:red;"> Pour les autres vous devriez voir une erreur.</span> Cette dernière est liée au fait que vous êtes **en retard** sur l'état du code sur la plateforme.
+Pour le premier qui **pousse**  cela devrait bien se passer. <span style="color:red;"> Pour les autres vous devriez voir une erreur.</span> Cette dernière est liée au fait que votre *branche*  est **en retard**  vis à vis de l'état du code sur la plateforme.
 
-Pour vous remettre à jour faire `git pull`.
->A noter que vous aurez à faire plusieurs mise à jour (ou alors, il faut que vous fassiez les `push` et `pull` dans un certain ordre)
+Pour vous remettre à jour faites `git pull`.
+>A noter que vous aurez à faire plusieurs mise à jour (ou alors, il faut que vous fassiez les `push` et `pull` dans un certain ordre au sein du groupe).
 
-Aller, au fur et à mesure, vérifier sur la plateforme que tout s'est bien passé. 
+Aller, au fur et à mesure de l'ajout des slides, vérifier sur la plateforme que tout s'est bien passé. 
 
 
 
@@ -251,7 +240,7 @@ Pour cela il faut faire
 ```
 git pull
 ```
-Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifiant la même partie du code), il faudra les résoudre "à la main". </span>
+Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifiant la même partie du code), il faudra les résoudre "à la main". Certains conflits peuvent cependant être géré automatiquement par git (à vos risques et perils). </span>
 
 ---
 
@@ -259,7 +248,7 @@ Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifia
 
 ### Qu'est-ce qu'une branche ?
 - Une **branche** est une version parallèle de votre projet.
-- Elle permet de travailler sur de nouvelles fonctionnalités ou corrections de bugs **sans affecter la branche principale** (nommée `main`). Ainsi, on isole les `bugs`du au développement de la branche principale qui doit rester fonctionnelle tout au long du projet. 
+- Elle permet de travailler sur de nouvelles fonctionnalités ou corrections de bugs **sans affecter la branche principale** (nommée `main`). Ainsi, on isole les `bugs` du développement de la branche principale. Cette dernière doit rester fonctionnelle tout au long du projet. 
 - Chaque branche possède son propre historique de commits.
 
 ---
@@ -272,7 +261,7 @@ Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifia
    - Les changements dans une branche n'affectent pas le code principal.
    - Permet d'expérimenter ou de corriger des bugs sans casser la version stable.
 
- Une fois le travail terminé, les branches peuvent être **fusionnées** (merged).
+ Une fois le travail terminé, les branches peuvent être **fusionnées** (MergeRequest/PullRequest).
 
 ---
 # **Votre première Branche**
@@ -280,10 +269,10 @@ Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifia
 Cette fois-ci vous allez devoir chacun 
 - Créé une branche (slide suivante)
 - Ajouter un (répartissez les vous) des fichier suivant dans votre branche : 
-  - **Readme.md** (description du projet)
+  - **Readme.md** <span style="color:red">(description du projet)</span> 
   - **Commandes.md** : Quelques commandes utiles (un autre .md) (alias env, path des données)
   - un fichier **.gitignore** (permet à git de ne pas suivre/montrer tous les fichiers)
-  - Correction du DM Xarray ? 
+  - <span style="color:red"> Correction du DM Xarray ? </span> 
    
 ---
 # **Création d'une branche**
@@ -314,6 +303,8 @@ Faite un `git status`. Que voyez-vous ?
 Aller sur git.meteo.fr. Comment voir votre branche ?  
 </div>
 </div>
+
+
 
 ---
 # **Notion de Merge Request (MR)** 
@@ -356,7 +347,37 @@ Vous pouvez aussi ajouter des camarades responsables de relire et donner leur av
 </div>
 
 ---
-# **Ajout de commentaires des relecteurs et Merge** 
+# **Ajout de commentaires de la part des relecteurs** 
+
+Des commentaires peuvent être ajouter à une MergeRequest (de la part des relecteurs). 
+Cela peut être fait pour (par exemple) : 
+- Demander des modifications 
+- Avoir des éclaircissement sur une partie du code
+- ... 
+  
+C'est un moment `d'interaction` autour de la proposition faite ou plusieurs personnes peuvent poser des questions ou indiquer des problèmes (fautes d'orthographes...). 
+
+> Faite chacun un commentaire sur une MergeRequest d'un autre. 
+
+Une fois tous les commentaires prise en compte, une personne (si possible pas celle qui a créer la MR) est responsable de la fusion de la branche. 
+
+---
+# **Changer de branche** 
+
+Une fois que toutes vos merges request on été effectuées, il vous faudra changer de branche (revenir dans la branche main) afin d'avoir l'ensemble des modifications faites par vous et vos camarades. 
+
+Pour cela faire : 
+```
+git checkout main
+```
+> Est-ce que vous voyez les fichiers ajoutés ? 
+
+puis mettre à jour la branche 
+```
+git pull
+```
+afin de tirer les modifications. 
+
 
 
 ---
@@ -388,14 +409,16 @@ Vous pouvez ajouter des tags par ligne de commande ou sur l'interface web.
 - **Résultat obtenu** : Ce qui s'est réellement passé, incluant tout message d’erreur.
 - **Version et environnement** : Version du code , Version de python et des librairies, Système d'exploitation (Ubuntu 20.04, Windows 98) ... 
 
----
-
-On peut maintenant vouloir visualiser les différences introduites par nos modifications locales. 
-Cela peut se faire via 
-``` git diff```
 
 ---
 # **Takeaway**  
 
 
 
+
+---
+# **Commandes utiles non abordées**
+- `git diff`
+- `git revert`
+- `git fetch`
+---
