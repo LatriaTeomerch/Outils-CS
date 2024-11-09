@@ -2,7 +2,7 @@
 marp: true
 paginate: true
 math: latex 
-theme: beam
+
 
 style: |
   .same_columns {
@@ -114,7 +114,17 @@ git config --global --unset http.proxy
 ## A. Connecter vous à [git.meteo.fr](git.meteo.fr) (via vos identifiant LDAP)
 > login : chabotv 
 > password : NeJamaisDonnerSonPassword
-## B. Aller sur le dépot du projet et cloner le dépot 
+
+
+Vous allez maintenant devoir vous mettre en groupe de 3 ou 4 étudiants (pour le tiers 1) ou de 4 étudiants (pour les tiers 2 et 3). 
+
+<span style="color:red;">
+Les professeurs devront vous ajouter manuellement au bon projet git. 
+</span>
+
+---
+# **B. Aller sur le dépot du projet et cloner le dépot**
+
 
 <div class="same_columns">
 <div>
@@ -126,12 +136,13 @@ git config --global --unset http.proxy
 
 ![width:400](figure/clone.png)
 
-```
-git clone https://git.meteo.fr/enm/eleves/ienm_2024-2027/MONPROJECT.git
-```
+
 </div>
 </div>
 
+```
+git clone https://git.meteo.fr/enm/eleves/ienm_2024-2027/cours_cs/gpX-Y.git
+```
 
 ---
 # **Ne pas avoir à rentrer son password à chaque communication** 
@@ -182,7 +193,7 @@ git log
 Maintenant vous allez tous modifier localement votre projet 
 Pour cela : 
 - Créer un dossiers `slides`
-- Choisissez chacun (au sein du groupe) un pdf différent et mettez-le dans le dossier slides. 
+- Choisissez chacun (au sein du groupe) **un** pdf différent et mettez-le dans le dossier slides. 
   
 > Question : Est-ce que l'historique de votre projet a changé ? 
 
@@ -192,11 +203,22 @@ Pour cela :
 Nous allons maintenant consulter l'état de "l’arbre de travail" 
 Pour cela faire `git status` . 
 
-Vous deviez avoir ce type de résultat 
+<div class="columns">
+<div>
 
 ![](./figure/Status.png)
 
-Ici cela me renseigne que le fichier Readme.md a été modifié.
+</div>
+<div>
+
+Vous deviez avoir ce type de résultat 
+</div>
+</div>
+
+
+
+
+Ici cela me renseigne que le fichier Readme.md a été modifié. **Dans votre cas, vous devriez voir en rouge un dossier slides avec un pdf de slides.** 
 
 > Est-ce que le fichier que vous avez ajouté à votre dépot a été ajouté au projet sur `git.meteo.fr` ? 
 > Que comprenez-vous du message renvoyé par la commande ? 
@@ -268,11 +290,11 @@ Attention : <span style="color:red">En cas de conflit (deux utilisateurs modifia
 
 Cette fois-ci vous allez devoir chacun 
 - Créé une branche (slide suivante)
-- Ajouter un (répartissez les vous) des fichier suivant dans votre branche : 
-  - **Readme.md** <span style="color:red">(description du projet)</span> 
-  - **Commandes.md** : Quelques commandes utiles (un autre .md) (alias env, path des données)
-  - un fichier **.gitignore** (permet à git de ne pas suivre/montrer tous les fichiers)
-  - <span style="color:red"> Correction du DM Xarray ? </span> 
+- Ajouter/Modifier un (répartissez-vous les tâches) des fichier suivant dans votre branche : 
+  - **Readme.md** : Changer le fichier Readme pour décrire ce que contient le dépot 
+  - **Commandes.md** : Vous pouvez ajouter queleques commandes utiles (par exemple comment activer votre environnement python, comment en créer un nouveau, comment créer un alias). 
+  - un fichier **.gitignore** (permet à git de ne pas suivre/montrer tous les fichiers) dans lequel vous ignorerez tous les dossiers `__pycache__`. 
+  - Le fichier du tp sur la programmation orientée objet (*guitar.py*). 
    
 ---
 # **Création d'une branche**
@@ -388,13 +410,16 @@ Au bout d'un moment, le nombre de commit fait va être très important (plusieur
 
 Pour avoir un "historique" plus exploitable vous pouvez utiliser des tags. Cela constituera les versions du code vers lesquelles vous pourrez vous tourner pour avoir l'état du code comme il était `avec cette fonctionnalité`. 
 
-Vous pouvez ajouter des tags par ligne de commande ou sur l'interface web.  
+Vous pouvez ajouter des tags directement sur l'interface web.  
 
 > Créez un nouveau tag (par ex v_0.0.0). 
 
 --- 
-# **La notion d'issues** 
+# **Les issues** 
 
+C'est l'interface d'échange pour rapporter des bugs, discuter/demander de nouvelles fonctionnalités aux développeurs d'un package. 
+
+Lorsque vous envisagez d'en créé une, commencer par regarder si une issue similaire n'existe pas déjà. 
 
 ---
 # **Comment bien décrire un bug**
@@ -407,18 +432,4 @@ Vous pouvez ajouter des tags par ligne de commande ou sur l'interface web.
   2. Fournissez le code, si applicable.
 - **Résultat attendu** : Décrivez ce que vous pensiez que le programme ferait.
 - **Résultat obtenu** : Ce qui s'est réellement passé, incluant tout message d’erreur.
-- **Version et environnement** : Version du code , Version de python et des librairies, Système d'exploitation (Ubuntu 20.04, Windows 98) ... 
-
-
----
-# **Takeaway**  
-
-
-
-
----
-# **Commandes utiles non abordées**
-- `git diff`
-- `git revert`
-- `git fetch`
----
+- **Version et environnement** : Version du code , Version de python et des librairies, ...
