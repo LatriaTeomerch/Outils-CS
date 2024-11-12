@@ -1,0 +1,18 @@
+dataset:
+  file_path: "https://example.com/weather_data.nc"
+  remote: true
+  variables:
+    - temperature
+    - humidity
+  fill_missing: "linear"
+
+processing:
+  start_time: "2024-01-01"
+  end_time: "2024-01-31"
+  reference_period: ["2000-01-01", "2010-12-31"]
+
+visualization:
+  plot_type: "mean_temperature" # Options: 'mean_temperature', 'anomaly', 'timeseries'
+  title: "Weather Data Visualization"
+  cmap: "viridis"
+  plot_timeseries_variable: "temperature" # Used if plot_type is 'timeseries'
