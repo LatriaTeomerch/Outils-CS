@@ -1,17 +1,70 @@
-Voici un **cahier des charges simplifié** pour chaque module, conçu comme des consignes détaillées pour des élèves qui doivent développer l'application de données météo étape par étape. L'objectif est de guider les étudiants tout en leur laissant une certaine liberté pour explorer les solutions par eux-mêmes.
+---
+theme: leibniz
+_class: lead
+marp: true
+---
+
+# Projet App Meteo
 
 ---
 
+## Cahier des charges global
+
+- Développer une application python permettant la lecture de données météo, leur manipulation ainsi que leur visualisation avec une mission globale donnée.
+
+---
+## Les Missions:
+
+### 1. Prévision des risques sur cumuls de pluie
+- Fournir des cumuls sur differents intervalles ( ex: 1H, 6H 12H et 24H ) 
+- Créer un risque en fonction d'une combinaison de seuil (ex : RR1 > 10).
+
+### 2. Humidex et Windchill
+- Création des indicateurs de température ressentie
+
+---
+
+### 3. Facteur de charge éolien 
+- Calculer le facteur de charge prévu d'une éolienne en fonction de l'intensité du vent.
+
+### 4. Prévisions Globales
+- Mettre en place l'équivalent du bulletin météo national et /ou local ( cf. JT 20H ).
+
+
+Pour chacune de ces missions, il faudra développer des visualisations spécifiques qui pourront afficher les résultats à partir de jeux de données variées et pour des zones géographiques précises.
+
+---
 ## **Module 1 : Configuration du Projet et de l'Environnement**
 
-### **Cahier des charges :**
+
 1. **Création de l'environnement virtuel** :
    - Créez un environnement virtuel Python pour ce projet et activez-le.
    - Installez toutes les bibliothèques nécessaires (`xarray`, `matplotlib`, `argparse`, `pyyaml`, etc.) en utilisant `pip`.
 
+---
+
 2. **Création de la structure des dossiers du projet** :
-   - Créez les dossiers nécessaires pour organiser votre projet, en suivant la structure donnée dans les instructions.
-   - Assurez-vous d'inclure un fichier `requirements.txt` contenant toutes les dépendances du projet.
+   
+   **Nom_de_mon_application**/
+   ├── /**sources**/
+   │   ├── **`__init__`.py**
+   │   ├── data_loader.py
+   │   ├── data_manipulator.py
+   │   ├── visualizer.py
+   │   └── cli.py
+   ├── input.yaml
+   ├── **.gitignore**
+   ├── **requirements.txt**
+   └── **README.md**
+
+   - Ne créer que les choses en **GRAS** !!
+---
+
+   - Assurez-vous d'inclure un fichier `requirements.txt` contenant toutes les dépendances du projet.( liste des bibliothèques )
+
+   - Ajoutez au '.gitignore' la ligne '__pycache__/' ainsi que '*.nc'.
+   
+---
 
 3. **Initialisation de Git** :
    - Initialisez un référentiel Git pour le projet.
@@ -26,23 +79,28 @@ Voici un **cahier des charges simplifié** pour chaque module, conçu comme des 
 ## **Module 2 : Chargement des Données Météo avec Xarray**
 
 ### **Cahier des charges :**
-1. **Classe `WeatherDataLoader`** :
-   - Créez une classe `WeatherDataLoader` qui prend en entrée un chemin de fichier (local ou distant) et charge un jeu de données météo avec `xarray`.
-   - Si le fichier est distant, gérez le chargement en utilisant soit une URL HTTP, soit un bucket S3. Vous devrez utiliser les bibliothèques `requests` ou `s3fs` en fonction du type de fichier distant.
-   - Ajoutez une méthode permettant de prétraiter les données en sélectionnant certaines variables et en remplissant les valeurs manquantes (interpolation).
+1. **Loader** :
+   - Créez, au travers d'une classe, un objet Loader capable de :
+        - prendre en entrée un chemin vers un fichier local NetCDF et en faire un dataset xarray.
+        - prendre en entrée une liste de fichier NetCFD et en faire un dataset xarray.
+        - Ajoutez la possibilité de prétraiter les données en sélectionnant certaines partie des données via un fichier de masque extérieur .
 
+---
 2. **Testez la classe** :
-   - Créez un fichier d'exemple pour tester le bon fonctionnement de la classe en chargeant un fichier distant ou local, et en prétraitant les données.
+   - Créez un fichier d'exemple pour tester le bon fonctionnement de la classe en chargeant un fichier local, et en prétraitant les données.
 
-### **Objectifs :**
-- Charger des fichiers NetCDF avec `xarray`.
-- Travailler avec des données locales et distantes.
-- Manipuler des valeurs manquantes dans les jeux de données.
 
 ---
 
 ## **Module 3 : Manipulation et Analyse des Données**
 
+Créez un object capable de manipuler vos données en fonction des besoins de votre mission.
+
+Vous pouvez commencer par discuter en groupe et écrire le détail des fonctionnalité que vous allez devoir implémenter pour mener à bien vos objectifs.
+
+--- 
+
+<!-- 
 ### **Cahier des charges :**
 1. **Classe `WeatherDataManipulator`** :
    - Créez une classe `WeatherDataManipulator` qui permet de filtrer les données en fonction d’une plage temporelle (par exemple, janvier 2024).
@@ -136,6 +194,4 @@ Voici un **cahier des charges simplifié** pour chaque module, conçu comme des 
 - **Propreté du code** : Votre code doit être lisible, bien structuré et suivre les bonnes pratiques de programmation Python (PEP 8).
 - **Modularité** : Divisez votre code en petites fonctions ou méthodes qui réalisent des tâches spécifiques, ce qui rendra votre code plus maintenable et réutilisable.
 
---- 
-
-Avec ces consignes, les élèves auront une vue d'ensemble du projet et seront guidés à travers chaque étape de son développement. Chaque module est conçu pour renforcer des compétences spécifiques tout en permettant une approche progressive pour développer une application complète.
+---  -->

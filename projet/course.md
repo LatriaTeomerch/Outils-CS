@@ -228,9 +228,7 @@ Nous allons utiliser `matplotlib` pour visualiser les données, telles que la te
            plt.title(title)
            plt.show()
 
-       def
-
- plot_anomaly(self, anomaly_data, title="Anomalie de Température", cmap="coolwarm"):
+       def plot_anomaly(self, anomaly_data, title="Anomalie de Température", cmap="coolwarm"):
            """Visualiser les anomalies de température."""
            anomaly_data.plot(cmap=cmap)
            plt.title(title)
