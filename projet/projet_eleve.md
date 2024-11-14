@@ -2,9 +2,21 @@
 theme: leibniz
 _class: lead
 marp: true
+style: |
+  .same_columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+   .columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 1rem;
+  }
+
 ---
 
-# Projet App Meteo
+# **Projet App Meteo**
 
 ---
 
@@ -17,21 +29,88 @@ marp: true
 
 ### 1. Prévision des risques sur cumuls de pluie
 - Fournir des cumuls sur differents intervalles ( ex: 1H, 6H 12H et 24H ) 
-- Créer un risque en fonction d'une combinaison de seuil (ex : RR1 > 10).
+- Créer un risque en fonction d'une combinaison de seuil (ex : RR1 > 10mm). 
+  
+  
 
 ### 2. Humidex et Windchill
-- Création des indicateurs de température ressentie
+- Création des indicateurs de température ressentie. 
+Le premier est utilisé en période estivale. Le second en période hivernale. 
 
 ---
 
 ### 3. Facteur de charge éolien 
-- Calculer le facteur de charge prévu d'une éolienne en fonction de l'intensité du vent.
+- Calculer le facteur de charge prévu d'une éolienne en fonction de la force du vent. 
 
-### 4. Prévisions Globales
-- Mettre en place l'équivalent du bulletin météo national et /ou local ( cf. JT 20H ).
+### 4. Synthése de données météorologiques 
+- Mettre en place l'équivalent de l'application web de MétéoFrance pour une zone donnée (ou autre par ex bulletin météo à portée nationale).
+
 
 
 Pour chacune de ces missions, il faudra développer des visualisations spécifiques qui pourront afficher les résultats à partir de jeux de données variées et pour des zones géographiques précises.
+
+---
+# **Les données à dispositions**
+Vous disposerez de trois types de données : 
+- des données de prévision déterministe AROME à 1.3km de résolution (grille EUR1S100) pour des échéances allant jusqu'à 50h. 
+**Nomenclature** : `arome_forecast_{day.strftime('%Y%m%d%H')}.nc`
+- des données de prévision ensembliste AROME à 2.5 km de résolution (grille EUR1S040) pour des échéances allant jusqu'à 50H. L'ensemble possède 25 membres différents. Chaque membre est dans un fichier spécifique. 
+**Nomenclature** : `arome_forecast_{day.strftime('%Y%m%d%H')}_mb_{str(X).zfill(3)}.nc` où X est le numéro du membre. 
+- des masques (remplis de 1 et de NaN) délimitant différents types de zones géographiques (avec ou non un nom). 
+
+---
+# **Contenu des fichiers AROME**
+
+![](../figure/AROME_project.png)
+- tirf : Pluie cumulée depuis le début de la prévision (en mm)
+- r2 : Humidité relative (en %)
+- prmsl : Pression ramenée au niveau de la mer (en Pa)
+- u10/v10 : composantes du vent à 10m (en m/s)
+- efg10/nfg10 : Composantes rafales à 10 m  (en m/s)
+
+---
+# **Les masques** 
+Trois types de masques sont disponibles (sur la France Métropolitaine) : 
+- Les masques de zones climatiques homogènes. Il sont dénommés 
+  `zones_clim_{X}.nc` où `X` varie en fonction de la zone.
+- Les masques de redécoupage de département (zones sympos). 
+Ils sont dénommés `sympo_{Y}.nc` où Y est le département. 
+- Des masques sur des Bassins Versants. Pour ce dernier jeu de masques, deux niveaux emboîtés sont fournis.
+    - `bassin_level1.nc` : Contient les 24 bassins versant sur la métropole 
+  - `bassin_level2_zone_{X}.nc` : Contient les bassins versant de la sous-zone `{X}`. 
+
+Chaque fichier contients plusieurs masques sur une zones données. 
+
+---
+# **Les grilles** 
+Chaque fichier de masques contient l'emprise des zones géographiques pour différentes grilles. 
+Avec les données AROME nous n'utiliseront que les grilles `eurw1s100` et `eurw1s40`. 
+
+---
+# **Visualisation des Masques (Zones sympo pour le 31)**
+<div class="columns">
+<div>
+
+```python
+import xarray as xr
+import matplotlib.pyplot as plt  
+path = "MYPATH/masks/Sympo/sympo_31.nc"
+ds = xr.open_dataset(path)
+ds = ds.set_coords("areaName") # Met le nom en coord
+# Change de coordonnée
+ds = ds["eurw1s100"].swap_dims({"id":"areaName"})
+# Affiche l'ensemble des masques du fichier (en fonction
+# de la coordonée areaName). 
+ds.plot(col="areaName",col_wrap=3)
+plt.show() 
+```
+</div>
+<div>
+
+![](../figure/Masques_31.png)
+
+</div>
+</div>
 
 ---
 ## **Module 1 : Configuration du Projet et de l'Environnement**
@@ -81,12 +160,12 @@ Pour chacune de ces missions, il faudra développer des visualisations spécifiq
 ### **Cahier des charges :**
 1. **Loader** :
    - Créez, au travers d'une classe, un objet Loader capable de :
-        - prendre en entrée un chemin vers un fichier local NetCDF et en faire un dataset xarray.
+        - prendre en entrée un chemin vers un fichier NetCDF et en faire un dataset xarray.
         - prendre en entrée une liste de fichier NetCFD et en faire un dataset xarray.
         - Ajoutez la possibilité de prétraiter les données en sélectionnant certaines partie des données via un fichier de masque extérieur .
 
 ---
-2. **Testez la classe** :
+1. **Testez la classe** :
    - Créez un fichier d'exemple pour tester le bon fonctionnement de la classe en chargeant un fichier local, et en prétraitant les données.
 
 
