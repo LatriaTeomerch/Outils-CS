@@ -153,6 +153,19 @@ Vous pouvez utiliser les commandes `head ` ou `tail` pour voir le début ou la f
 
 
 ---
+# **Rechercher les occurences d'une chaîne de caractères**
+
+Pour effectuer des recherches au sein de fichiers `ascii`, vous pouvez utiliser la commande `grep`. 
+
+**Exemple :** Trouver l'ensemble des mots contenants "meteo" dans le dictionnaire 
+
+
+```
+grep meteo /usr/share/dict/words
+```
+Combien en existe-t-il ? 
+
+---
 
 # UNIX CLI Part 2/4: Commandes de gestion de fichiers
 
@@ -340,17 +353,49 @@ Le script `dungeon.sh` est disponible dans le dossier de votre professeur :
 
 ## Now, let's embark on your UNIX adventure! **Here is your quest**:
 
-1. Create a folder `Cours_CS` and a subfolder `Test_unix`  and move inside it
-1. Copy the file `dungeon.sh` from your teacher repository (`
-/home/newton/ienm2021/chabotv/COURS_CS
-`) 
-1. Try to execute the script 
-1. If needed, change the access right to the file (via `chmod` command) so the file can be executed. 
-1. Count how many `goblins` files there are in the dungeon
-1. Find all the `prince` and `princess` occurrences in the files
-1. Delete the dungeon - without wiping  out the script `dungeon.sh`!
-1. restart with a new dungeon.
+1. Créer un dossier `Cours_CS` et un sous dossier `Test_unix`. Aller à l'intérieur. 
+1. Copier le fichier  `dungeon.sh` depuis le dossier de votre professeur (`/home/newton/ienm2021/chabotv/COURS_CS`) dans le dossier `Test_unix`
+1. Executez le script 
+1. Si besoin, changer les droits d'acccès (via `chmod` command) pour rendre le fichier soit executable  
+1. Comptez combien de fichiers `goblins` il y a dans votre dongeon
+1.  Trouver l'ensemble des occurences de `prince` et `princess` dans vos fichiers.
+1. Supprimer le dossier du dongeon (sans supprimer le script `dungeon.sh`!
+1. Recommencez avec un nouveau dongeon.
 
+---
+
+## Les réponses 
+1. Créer un dossier `Cours_CS` et un sous dossier `Test_unix`. Aller à l'intérieur. 
+```bash 
+cd ~ 
+mkdir Cours_CS 
+cd Cours_CS
+mkdir Test_unix 
+cd Test_unix 
+pwd 
+```
+2.  Copier le fichier  `dungeon.sh` depuis le dossier de votre professeur (`/home/newton/ienm2021/chabotv/COURS_CS`) dans le dossier `Test_unix`
+
+```bash 
+cp /home/newton/ienm2021/chabotv/COURS_CS/dungeon.sh ~/Cours_CS/Test_unix/dungeon.sh 
+```
+
+---
+5. 
+Une première option est de "compter" à la main (tapper simplement la commande `tree` dans le dossier.) 
+Vous pouvez aussi utiliser un pipe (`|`) pour enchainer avec une autre commande et ne conserver que les lignes contenants `goblins.txt` : ` tree|grep goblins.txt`
+
+Une autre option est d'utiliser la commande `find`: 
+```bash 
+find . -name goblins.txt
+```
+
+> Vous pouvez aussi utiliser la command `wc` pour faire compter le nombre de ligne dans la réponse au shell à votre place. 
+Exemple : `tree|grep goblins.txt|wc -l`
+---
+
+6. Pour effectuer une recherche dans l'ensemble des fichiers du dossier Dungeon vous pouvez utiliser `grep`
+`grep -r prince Dungeon/* `
 
 ---
 # **Quelques compléments**
@@ -363,7 +408,7 @@ Ex : On peut par exemple ajouter le repertoire dans lequel les supports de cours
 alias cdprof='cd /home/newton/ienm2021/chabotv/COURS_CS'
 ```
 
-
+  
 
 
 
