@@ -1,5 +1,5 @@
 ---
-title: Python virtual environments
+title: Environnements Virtuels Python
 marp: true
 paginate: true
 math: latex 
@@ -16,7 +16,7 @@ style: |
     gap: 1rem;
   }
 ---
-# **Python Virtual Environments**
+# **Environnements Virtuels Python**
 ---
 
 ### Qu’est-ce qu’un environnement virtuel Python et pourquoi l’utiliser ?
