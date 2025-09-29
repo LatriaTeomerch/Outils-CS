@@ -153,3 +153,29 @@ Voici quelques liens pour des explications non-COOP :
 - [geeksforgeeks](https://www.geeksforgeeks.org/python-virtual-environment/) : une présentation encore plus courte des venvs.
 
 - [towardsdatascience](https://towardsdatascience.com/why-you-should-use-a-virtual-environment-for-every-python-project-c17dab3b0fd0) : un article non technique expliquant POURQUOI utiliser un venv.
+
+---
+
+### Créer un alias pour activer automatiquement votre venv
+
+Si vous utilisez régulièrement le venv totoro, vous pouvez créer un alias dans votre fichier `.bashrc` afin de l’activer plus rapidement.
+
+Pour cela, on ajoute cette ligne à la fin de notre fichier `~/.bashrc` :
+
+```bash
+alias totoro="source ~/python_venvs/totoro/bin/activate"
+```
+
+Ensuite, on recharge votre configuration :
+
+```bash
+source ~/.bashrc
+```
+
+À partir de maintenant, il suffit de taper :
+
+```bash
+totoro
+```
+
+Pour activer automatiquement l'environnement virtuel **totoro** et la commande `deactivate` pour le quitter.
