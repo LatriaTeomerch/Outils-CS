@@ -157,11 +157,11 @@ Vous pouvez utiliser les commandes `head ` ou `tail` pour voir le début ou la f
 
 Pour effectuer des recherches au sein de fichiers `ascii`, vous pouvez utiliser la commande `grep`. 
 
-**Exemple :** Trouver l'ensemble des mots contenants "meteo" dans le dictionnaire 
+**Exemple :** Trouver l'ensemble des mots contenants "cumul" dans le dictionnaire 
 
 
 ```
-grep meteo /usr/share/dict/words
+grep cumul /usr/share/dict/words
 ```
 Combien en existe-t-il ? 
 
@@ -341,17 +341,31 @@ bash hello.sh
 # UNIX CLI part 4/4 :  Tester vos base 
 
 
-In this final section, we'll put your newfound UNIX command-line skills to the test. We'll use a script called `dungeon.sh` to create a random file structure resembling a dungeon with monsters and loot. Each time you run the script, it will generate a unique dungeon for you to explore.
+---
+# Quelques message d'erreurs à interpréter 
+
+![height:70](./figures/Erreur_NotExist.png)
+
+![height:80](./figures/Directory_NotExist.png)
+
+![height:120](./figures/FichierSource_NotExist.png)
+
+![height:120](./figures/Erreur_Droit.png)
 
 ---
+# Un peu de manipulation 
+Pour cet exercice, vous aller devoir éxecuter le script `dungeon.sh`. 
 
-Le script `dungeon.sh` est disponible dans le dossier de votre professeur : 
+Ce script `dungeon.sh` est disponible dans le dossier de votre professeur : 
 ```
 /home/newton/ienm2021/chabotv/COURS_CS
 ```
+
+> Vous pouvez bien entendu l'ouvrir pour voir ce qui est fait dedans. 
+
 ---
 
-## Now, let's embark on your UNIX adventure! **Here is your quest**:
+## Démarrons votre aventre UNIX ! **Ceci est votre première quête :**
 
 1. Créer un dossier `Cours_CS` et un sous dossier `Test_unix`. Aller à l'intérieur. 
 1. Copier le fichier  `dungeon.sh` depuis le dossier de votre professeur (`/home/newton/ienm2021/chabotv/COURS_CS`) dans le dossier `Test_unix`

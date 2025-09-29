@@ -73,7 +73,7 @@ total_files=0  # Initialize the total files count
 
 # Create the root directory "Dungeon"
 root_dir="Dungeon"
-mkdir "$root_dir"
+mkdir -p "$root_dir"
 cd "$root_dir"
 
 # Start creating the themed random dungeon structure
