@@ -1,9 +1,20 @@
 ---
-theme: gaia
 title: Python virtual environments
-_class: lead 
 marp: true
 paginate: true
+math: latex 
+
+style: |
+  .same_columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+   .columns {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 1rem;
+  }
 ---
 # **Python Virtual Environments**
 ---
