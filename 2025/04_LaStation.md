@@ -232,7 +232,7 @@ Créer une fonction `select_period` permettant de selectionner une sous période
 
 
 ---- 
-# Réponse 
+# **Réponse** 
 
 ```python 
 def select_period(df, start_period, end_period, hour=None): 
@@ -240,32 +240,92 @@ def select_period(df, start_period, end_period, hour=None):
     # On reprend l'exemple de la slide précédente
     cdt = (df.date > start_period)*(df.date < end_period)
     # Mise a jour de la condition pour rajouter la selection de l'heure
-    if hour: 
-        cdt = cdt * df.date.dt.hour == hour
+    if hour is not None: # Attention `if hour:` ne fonctionne pas avec 0.  
+        cdt = cdt * (df.date.dt.hour == hour)
     df_period = df[cdt]
 
     return df_period 
 ```
 
 ---
-# Exercice 
+# **Exercice** 
 
 Pour cet exercice, nous allons étudier la période allant du 1er Octobre au 15 Octobre pour la station 22219003.
 
 
 A quelle(s) date(s) la température maximum a-t-elle été atteinte sur la période ?
+Cela correspond-il au moment de la journée pour lequel en moyenne la température est maximale sur la période ?  
 
-**NB** : La température est stockée dans la colonne dénotée `t`. 
-*Bonus :* Cela correspond-il au moment de la journée pour lequel en moyenne la température est maximale sur la période ?  
+**NB** : La température est stockée dans la colonne de la dataframe dénotée `t`. 
+
+*Bonus* : Refaire la même chose en arrondissant la moyenne des températures à la valeur entière la plus proche. Trouvez-vous la/les même heure ? 
+Si non, avez vous une idée du problème ?  
 
 ---
-# Une solution 
+# **Une solution**
 
 ```python 
-# Lecture (dans df déjà chargé) des données de la station 
 df_station = read_station_data(df, id_number=22219003)
 start_period = dt.datetime(2018,10,1) 
 end_period = dt.datetime(2018,10,15)
 df_period = select_period(df_station, start_period, end_period)
 max_temperature = df_period["t"].max()
-elt = df_period[df_period]
+
+# Liste des elements ayant atteint cette température maximum. 
+elt = df_period[df_period["t"] == max_temperature]
+
+print(f"La température maximale sur la période a été de {max_temperature}.")
+print(f"Elle a été atteinte pour les dates suivantes : {elt["date"].dt.strftime("%Y%m%d-%H").values}")
+# On va maintenant trouver la moyenne horaire maximale
+# Dictionnaire qui va contenir le maximum pour chaque heure 
+mean_hour = {
+  "hour": [],
+  "value": []
+}
+# On calcul le maximim pour chaque heure 
+for i in range(0,24): 
+    df_period = select_period(df_station, start_period, end_period, hour=i)
+    print(len(df_period))
+    mean_hour["hour"].append(i) 
+    mean_hour["value"].append(df_period["t"].mean())
+# On recherche le maximum 
+mean_max = np.max(mean_hour["value"])
+# On regarde quand ce maximum a été atteint 
+index_max = mean_hour["value"].index(mean_max)
+# On regarde ensuite l'heure de ce maximum
+print(f"L'heure pour laquelle ce maximum a été atteint est {mean_hour['hour'][index_max]} H")
+```
+
+---
+# **Bonus** 
+
+Le problème de la solution précédente vient de l'utilisation d'`index`. 
+Cette méthode renvoit la première occurence de la valeur cherchée de la liste. 
+Il faudrait faire une  boucle explicite recherchant la valeur pour avoir toutes les heures correspondant. 
+
+---
+# **Exercices** 
+<div class="columns">
+<div>
+
+- Ecrire une fonction prenant en entrée un dataframe,  la variable d'intérêt (`t`,`hu`, `td`, ...) et retournant l'heure du maximum et du minimum sur la période. 
+- Ecrire une fonction prenant en entrée un dataframe, la variable d'intérêt (`t`), la fonction d'aggrégation (`mean`, `max`, `min`) et retournant la valeur aggrégé par heure de la journée 
+- Ecrire une fonction permettant de visualiser la moyenne horaire sur la période  
+
+</div>
+<div>
+
+![width=250px](./figures/CycleJournalier.png)
+
+</div>
+
+---
+#  **Résumé**
+Nous disposons maintenant : 
+- d'une fonction permettant d'extraire les données correspondant à une station d'un dataFrame
+- d'une fonction permettant de filtrer une période particulière du jeu de données
+- d'une fonction permettant d'extraire l'heure du maximum et du minimum pour une variable 
+- d'une fonction permettant d'aggréger les données d'une période par heure de la journée
+- d'une fonction de visualisation du cycle journalier  
+
+Nous verrons lors du prochain cours comment nous pouvons nous en servir pour créer un "objet" station. 
