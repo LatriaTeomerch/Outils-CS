@@ -46,7 +46,11 @@ Inutile de le copier chez vous, vous pouvez directement l'utiliser dans vos scri
 ---
 # **But du TP** 
 
-Dans ce TP on va voir comment extraire de l'information du fichier csv via l'implémentatin de différentes fonctions. 
+Dans ce TP on va voir comment extraire de l'information du fichier csv via l'implémentation de différentes fonctions. 
+
+Nous allons notamment voir :
+- Comment lire un fichier csv (via Pandas)
+- Comment manipuler des dates
 
 ---
 # **Lecture et ouverture du fichier**
@@ -163,8 +167,21 @@ Faite une fonction qui affiche les informations propres à la station à savoir 
   - latitude 
   - longitude 
   - altitude, 
-  - son identifiant. 
   
+
+---
+# **Une réponse possible**
+
+```python 
+def print_station_info(df:pd.DataFrame, id_number:int):
+    data = read_station_data(df, id_number)
+    print(f" Information pour la station {id_number}")
+    print(f" Latitude de la station : {data["lat"].unique()}")
+    print(f" Longitude de la station : {data["lon"].unique()}")
+    print(f" Hauteur de la station : {data["height_sta"].unique()}")
+```
+
+Votre station a-t-elle bougée dans l'année ? 
 
 ---
 
@@ -217,10 +234,10 @@ df_station = read_station_data(df, id_number=22219003)
 start_period = dt.datetime(2018,10,1)
 end_period = dt.datetime(2018,10,15)
 # Recherche des dates satisfaisant les deux conditions 
-selected = (df.date.dt > start_period)*(df.date.dt < end_period)
+selected = (df_station.date > start_period)*(df_station.date < end_period)
 # Selection de la bonne période 
 df_period = df_station[selected]
-# Affichage des dates sélectionnées
+# Affichage de la dataframe pour les dates sélectionnées
 print(df_period)
 ```
 
@@ -282,7 +299,7 @@ mean_hour = {
   "hour": [],
   "value": []
 }
-# On calcul le maximim pour chaque heure 
+# On calcul la moyenne pour chaque heure 
 for i in range(0,24): 
     df_period = select_period(df_station, start_period, end_period, hour=i)
     print(len(df_period))
@@ -308,8 +325,8 @@ Il faudrait faire une  boucle explicite recherchant la valeur pour avoir toutes 
 <div class="columns">
 <div>
 
-- Ecrire une fonction prenant en entrée un dataframe,  la variable d'intérêt (`t`,`hu`, `td`, ...) et retournant l'heure du maximum et du minimum sur la période. 
-- Ecrire une fonction prenant en entrée un dataframe, la variable d'intérêt (`t`), la fonction d'aggrégation (`mean`, `max`, `min`) et retournant la valeur aggrégé par heure de la journée 
+- Ecrire une fonction prenant en entrée un dataframe,  la variable d'intérêt (`t`,`hu`, `td`, ...) et retournant l'heure du premier maximum et du premier minimum sur la période. 
+- Ecrire une fonction prenant en entrée un dataframe, la variable d'intérêt (`t`, `hu`, `td`, ...), la fonction d'aggrégation (`mean`, `max`, `min`) et retournant la valeur aggrégé par heure de la journée 
 - Ecrire une fonction permettant de visualiser la moyenne horaire sur la période  
 
 </div>
@@ -320,6 +337,72 @@ Il faudrait faire une  boucle explicite recherchant la valeur pour avoir toutes 
 </div>
 
 ---
+# Une solution Extrema 
+
+```python 
+def extrema(df:pd.DataFrame, variable:str):
+    """
+    Regarde pour une variable donnée la première heure pour 
+    laquelle le maximum/minimum a été atteint. 
+    """
+    maxi = df[variable].max()
+    mini = df[variable].min()
+    # Filtre pour ne garder que les elements correspondants au maximum
+    max_date =  df[df[variable] == maxi]
+    # au minimum 
+    min_date =   df[df[variable] == mini]
+    heure_max = max_date["date"].dt.strftime("%H").values[0]
+    heure_min = min_date["date"].dt.strftime("%H").values[0]
+    return (heure_max, heure_min )
+```
+
+---
+# Une solution pour l'aggrégation 
+
+```python 
+def aggregation(df:pd.DataFrame,variable:str, methode:str):
+    # Création d'une liste pour mettre la donnée aggrégée 
+    result = []
+    for hour in range(0,24): 
+        cdt = df.date.dt.hour == hour 
+        df_selected = df[cdt]
+        if methode == "mean": 
+            result.append(df_selected[variable].mean())
+        elif methode == "min": 
+            result.append(df_selected[variable].min())
+        elif methode == "max": 
+            result.append(df_selected[variable].max())
+        else:
+            raise ValueError("Aggregation method not known")
+    return result 
+```
+
+---
+# Autre solution pour l'aggrégation 
+```python 
+  def aggregated_bis(df, variable,methode): 
+    result = []
+    for hour in range(0,24): 
+        cdt = df.date.dt.hour == hour 
+        df_selected = df[cdt]
+        if methode in ["mean","max","min"]:
+          # On utilise getattr afin de requeter l'attribut correspondant à notre 
+          # méthode et on l'applique 
+            result.append(df_selected[variable].__getattr__(methode)())
+        else: 
+            raise ValueError("Aggregation method not known")
+```
+
+Cette solution est plus complexe à lire. Cependant, elle est plus facilement extensible à d'autres fonctionnalités que possède notre objet. On peut à l'aide de la fonction `dir` avoir une idée des principales fonctionnalités de notre objet. 
+
+**Exemple** 
+```python 
+dir(df["t"])
+```
+
+---
+
+
 #  **Résumé**
 Nous disposons maintenant : 
 - d'une fonction permettant d'extraire les données correspondant à une station d'un dataFrame
