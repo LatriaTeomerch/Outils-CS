@@ -52,6 +52,13 @@ Nous allons notamment voir :
 - Comment lire un fichier csv (via Pandas)
 - Comment manipuler des dates
 
+
+Pour ce TP il vous faudra installer pandas et matplotlib.
+1. Activer l'environnement virtuel créé lors du dernier TP.
+2. Faire ensuite
+  ```sh
+  pip install pandas matplotlib 
+  ```
 ---
 # **Lecture et ouverture du fichier**
 
