@@ -1,21 +1,54 @@
 ---
+theme: leibniz
+class:
+  - lead
 marp: true
+paginate: true
+style: |
+  .same_columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+   .columns {
+    display: grid;
+    grid-template-columns: 1fr 2fr; 
+    gap: 1rem;
+  }
+  h1 {
+    text-align: center;
+  }
+  img {
+    display: block;
+    margin: 1em auto;
+    width: 70%;
+  }
 ---
 
 
 # **La Programmation Orientée Objet**
 
 ---
-# **Un peu de contexte**
+## **Un peu de contexte**
 
-In the realm of scientific software development, many programmers lack a strong background in computer science. This particular niche emphasizes expertise in areas such as physical modeling, numerical methods, applied mathematics, and high-performance optimization. As a result, most practitioners in this community tend to stick to the familiar procedural programming approach. However, when faced with the concept of "objects" in object-oriented programming, newcomers often encounter questions like whether they should use objects, if they offer advantages over procedural approaches, how to implement them effectively, and what potential pitfalls to watch out for. Unfortunately, the answer to these questions is often ambiguous and depends on the specific situation. 
+Dans le développement logiciel scientifique, beaucoup de programmeurs n’ont pas une formation poussée en informatique. Ils sont surtout experts en modélisation physique, méthodes numériques, maths appliquées et optimisation des performances.
+Du coup, ils utilisent souvent une approche procédurale, qu’ils connaissent bien.
+
+Mais dès qu’on parle de programmation orientée objet, les questions arrivent :
+
+- Faut-il vraiment utiliser des objets ?
+- Quels avantages par rapport au procédural ?
+- Comment les mettre en place efficacement ?
+- Quels sont les pièges à éviter ?
+
+Et comme souvent… la réponse dépend du contexte : il n’y a pas de solution unique.
 
 ---
-## **Object vs procedural programming**
-
-Petit schema avec le procedural en ligne et les objets dans une piscine.
+# Procédurale vs Orientée objet
+![center](./figures/oop_vs_proc.jpg)
 
 ---
+
 Lors du précédent TP nous avons définis plusieurs fonction pour venir lire, filtrer et interpréter les données d'un fichier CSV relatif à un réseau de stations météo.
 
 *read_station_data()* -> lecture du fichier d'entrée et selection d'une station via son ID
@@ -26,7 +59,7 @@ Lors du précédent TP nous avons définis plusieurs fonction pour venir lire, f
 *visualize()* -> visualiser des données/résultats via un graphique.
 
 ---
-Références pour les fonctions:
+**Références pour les fonctions:**
 
 ```python
 def read_station_data(id_number):
@@ -95,43 +128,148 @@ def visualize(x_value,y_value,axis_labels=['X','Y']):
 ```
 
 ---
-Mon script principale d'appel à ces différentes fonctions pourrais ressembler au suivant:
+### Comment un objet peut apparaître
+
+Les objets sont des outils utiles pour simplifier l'interface de programmation (API): notre script principal ressemble au suivant:
 
 ```python
 # Script d'appel pour la station 73010
 station_id = 73010
-df_station_73010 = read_station_data(73010)
-print_station_info(df_station_73010)
-start_period = dt.datetime(2018,10,1)
-end_period = dt.datetime(2018,10,15)
-df_station_73010_oct = select_period(df_station_73010, start_period, end_period) 
-h_temp_max,h_temp_min = extrema (df_station_73010_oct,"t")
-mean_temp = aggregation(df_station_73010_oct,"t", methode = "mean")
+df_station_73010 = read_station_data(station_id)
+print_station_info(df_station_73010, station_id)
+df_station_73010_oct = select_period(df_station_73010, '2018-10-1', '2018-10-15')
+h_temp_max, h_temp_min = extrema(df_station_73010_oct, "t")
+mean_temp = aggregation(df_station_73010_oct, "t", methode = "mean")
 visualize(range(len(mean_temp)),mean_temp,axis_labels=['Heure de la journée','Temperature Moyenne'])
 ```
-- Que se passe-t-il si je veux changer la plage temporelle ?
-- Et si je veux selectionner une autre stations ?
-- Les deux ?
+Quels sont les défauts d'un tel script ?
+
+
+---
+```python
+# Script d'appel pour la station 73010
+station_id = 73010
+df_station_73010 = read_station_data(station_id)
+print_station_info(df_station_73010, station_id)
+df_station_73010_oct = select_period(df_station_73010, '2018-10-1', '2018-10-15')
+h_temp_max, h_temp_min = extrema(df_station_73010_oct, "t")
+mean_temp = aggregation(df_station_73010_oct, "t", methode = "mean")
+visualize(range(len(mean_temp)),mean_temp,axis_labels=['Heure','Temperature Moyenne'])
+```
+- Répétition des arguments (id, df) à chaque appel.
+
+- Pas de lien entre les fonctions → risque d’erreur et incohérence.
+
+- Aucun état conservé → il faut tout repasser à chaque fois.
+
+- Évolution difficile → une modification touche plusieurs fonctions.
+
+- Code peu réutilisable → compliqué à étendre à plusieurs stations/periodes
+
+
+
+
+---
+L'API idéale pourrait ressembler à cela:
+
+```python
+Station_73 = StationMeteo(id= 73010)
+Station_73.set_period('2018-10-1', '2018-10-15')
+h_max,h_min = Station_73.extrema("t")
+mean_T = Station_73.aggregat('t',methode='mean')
+visualize(range(24), mean_T, axis_labels = ["Heure", "Température moyenne"])
+```
+
+`Station_73` est un *objet* `StationMeteo()` défini pour la station 73010. 
+Cela s'appelle une *instance* de l'objet `StationMeteo`. 
+`.set_period()` est une *methode* de l'objet qui remplace la fonction  `select_period()`. Ce qui rend cet objet unique est son *attribut* `id`.
 
 ---
 
-Il est bien sur possible de dupliquer ce block de code pour chaque station et changer les lignes correspondantes pour varier la période sélectionnée. Il est aussi tout à fait possible de faire de ce block une fonction que l'on peut appeler, cependant elle posséderas un nombre conséquents d'arguments et il s'agit de quelques choses qu'il faut essayer d'éviter, pour des raisons de maintenances et de comprehension du code. 
-
-Imaginons que nous voulions travailler sur une stations météo donnée sur 3 differentes plages de temps.
-L'API idéal pourrait être quelques choses comme cela:
+Comment creer ce createur d'objet qu'est `StationMeteo()`?
+On définit une *classe*:
 
 ```python
-Station_73 = StationMeteo(73010)
-Period_1 = Station_73.select_period(start1,end1)
-Period_2 = Station_73.select_period(start2,end2)
-Period_3 = Station_73.select_period(start3,end3)
+class StationMeteo:
+    def __init__(self, id_number):
+        self.id = id_number
+        self.df = read_station_data(self.id)
+        self.df_period = self.df
+
+    def set_period(self, start, end):
+        self.df_period = select_period(self.df, start, end)
+
+    def info(self):
+        print_station_info(self.df_period, self.id)
+
+    def extrema(self, var: str):
+        return extrema(self.df_period, var)
+
+    def aggregate(self, var, methode):
+        return aggregation(self.df_period, var, methode=methode)
 ```
 
+---
+
+Cette classe possède une methode d'initialisation `__init__()`:
 ```python
-Station_73 = StationMeteo(73010)
-Station_73.set_period(start1, end1)
-h_max,h_min = Station_73.extrema("t")
-mean_t = Station_73.aggregat('t',methode='mean)
-````
+    def __init__(self, id_number):
+        self.id = id_number
+        self.df = read_station_data(self.id)
+        self.df_period = self.df
+```
+Ainsi que plusieurs methodes dont:
+```python
+    def info(self):
+        print_station_info(self.df_period, self.id)
+```
+Les méthodes sont comme des super fonctions qui, lorsqu'elles sont définies dans une classe, peuvent utiliser des attributs comme ici `self.id` qui sont des parametres spécifiques de l'objet.
+
+
+---
+## Exercice 
+
+- Mettre en place la classe StationMeteo dans le script et executer une procedure d'appel complet avec instanciation d'un objet StationMeteo pour la station 22219003 et la visualisation de la temperature moyenne pour chaques heures sur la periode du 1er au 5 octobre 2018.
+
+- Ajouter la possibilité d'exporter sous forme de .csv les données  de l'objet station, avec l'option de spécifier une période.
+
+---
+## Solution potentielle
+
+---
+## Vers un objet Reseau
+
+Maintenant que l'on a un objet StationMeteo qui répond à nos besoin, 
+si jamais on voulais travailler en parrallèle sur toutes les stations incluses dans le fichier, cela donnerai un script extrement lourd, peu lisible et prompt à contenir des erreurs, comme dans le cadre de l'approche fonctionnelle du départ.
+
+---
+# Exercice
+
+- Creer un objet/classe ReseauMeteo permettant d'avoir accès à n'importe quelle station. L'utilisation d'un objet StationMeteo **modifié** est recommandé...
+- Mettre en place une méthode permettant d'afficher les informations des differentes stations du réseau.
+- Bonus: Ajouter la possibilité de filtrer la période sur tout le réseau
+---
+```python
+class Reseau:
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.stations = {}
+        self._load_stations()
+
+    def _load_stations(self):
+        df = pd.read_csv(self.file_path, parse_dates=[4])
+        for id_number in df["number_sta"].unique():
+            station_df = df[df["number_sta"] == id_number]
+            self.stations[id_number] = Station(id_number, station_df)
+
+    def get_station(self, id_number):
+        return self.stations.get(id_number)
+```
+On effectue ici ce que l'on appelle une *composition d'objets*: un objet composé d'autres objets.
+
+
+---
+
+## Concept d'API progressive
 
 ---

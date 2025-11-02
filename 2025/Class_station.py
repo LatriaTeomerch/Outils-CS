@@ -9,7 +9,7 @@ def read_station_data(id_number):
     # Verification que l'id existe
     if id_number not in df["number_sta"].unique():
         print(f"La station demandée {id_number} n'existe pas.")
-        print(f"Les possibilitées sont {df["number_sta"].unique()}")
+        print(f"Les possibilitées sont {df['number_sta'].unique()}")
         raise ValueError("Station {id_number} does not exist!")
     # Lecture et filtrage
     return df[df["number_sta"] == id_number]
@@ -17,9 +17,9 @@ def read_station_data(id_number):
 
 def print_station_info(df: pd.DataFrame, id_number: int):
     print(f" Information pour la station {id_number}")
-    print(f" Latitude de la station : {df["lat"].unique()}")
-    print(f" Longitude de la station : {df["lon"].unique()}")
-    print(f" Hauteur de la station : {df["height_sta"].unique()}")
+    print(f" Latitude de la station : {df['lat'].unique()}")
+    print(f" Longitude de la station : {df['lon'].unique()}")
+    print(f" Hauteur de la station : {df['height_sta'].unique()}")
 
 
 def select_period(df, start_period, end_period, hour=None):
@@ -90,3 +90,12 @@ class StationMeteo:
 
     def aggregate(self, var, methode):
         return aggregation(self.df_period, var, methode=methode)
+
+
+station_id = 73010
+df_station_73010 = read_station_data(station_id)
+print_station_info(df_station_73010, station_id)
+df_station_73010_oct = select_period(df_station_73010, '2018-10-1', '2018-10-15')
+h_temp_max, h_temp_min = extrema(df_station_73010_oct, "t")
+mean_temp = aggregation(df_station_73010_oct, "t", methode = "mean")
+visualize(range(len(mean_temp)),mean_temp,axis_labels=['Heure de la journée','Temperature Moyenne'])
