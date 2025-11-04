@@ -285,7 +285,7 @@ class Reseau:
     def _load_stations(self):
         df = pd.read_csv(self.file_path, parse_dates=[4])
         for id_number in df["number_sta"].unique():
-            self.stations[id_number] = Station(id_number, station_df)
+            self.stations[id_number] = Station(id_number)
 
     def get_station(self, id_number:int):
         return self.stations.get(id_number)
