@@ -49,7 +49,7 @@ Et comme souvent… la réponse dépend du contexte : il n’y a pas de solution
 
 ---
 
-Lors du précédent TP nous avons définis plusieurs fonction pour venir lire, filtrer et interpréter les données d'un fichier CSV relatif à un réseau de stations météo.
+Lors du précédent TP nous avons défini plusieurs fonctions pour venir lire, filtrer et interpréter les données d'un fichier CSV relatif à un réseau de stations météo.
 
 *read_station_data()* -> lecture du fichier d'entrée et selection d'une station via son ID
 *print_station_info()* -> afficher des informations relatives à cette station
@@ -130,7 +130,8 @@ def visualize(x_value,y_value,axis_labels=['X','Y']):
 ---
 ### Comment un objet peut apparaître
 
-Les objets sont des outils utiles pour simplifier l'interface de programmation (API): notre script principal ressemble au suivant:
+Les objets sont des outils utiles pour simplifier l'interface de programmation (API). 
+Prenons notre script principal, notre API, qui ressemble pour l'instant au suivant:
 
 ```python
 # Script d'appel pour la station 73010
@@ -180,9 +181,10 @@ mean_T = Station_73.aggregat('t',methode='mean')
 visualize(range(24), mean_T, axis_labels = ["Heure", "Température moyenne"])
 ```
 
-`Station_73` est un *objet* `StationMeteo()` défini pour la station 73010. 
-Cela s'appelle une *instance* de l'objet `StationMeteo`. 
-`.set_period()` est une *methode* de l'objet qui remplace la fonction  `select_period()`. Ce qui rend cet objet unique est son *attribut* `id`.
+- `Station_73` est un *objet* `StationMeteo()` défini pour la station 73010. 
+- Cela s'appelle une *instance* de l'objet `StationMeteo`. 
+- `.set_period()` est une *methode* de l'objet qui remplace la fonction  `select_period()`. 
+- Ce qui rend cet objet unique est son *attribut* `id`.
 
 ---
 
@@ -191,7 +193,7 @@ On définit une *classe*:
 
 ```python
 class StationMeteo:
-    def __init__(self, id_number):
+    def __init__(self, id_number:int):
         self.id = id_number
         self.df = read_station_data(self.id)
         self.df_period = self.df
@@ -205,7 +207,7 @@ class StationMeteo:
     def extrema(self, var: str):
         return extrema(self.df_period, var)
 
-    def aggregate(self, var, methode):
+    def aggregate(self, var:str, methode:str):
         return aggregation(self.df_period, var, methode=methode)
 ```
 
@@ -218,40 +220,64 @@ Cette classe possède une methode d'initialisation `__init__()`:
         self.df = read_station_data(self.id)
         self.df_period = self.df
 ```
-Ainsi que plusieurs methodes dont:
+Ainsi que plusieurs méthodes dont:
 ```python
     def info(self):
         print_station_info(self.df_period, self.id)
 ```
-Les méthodes sont comme des super fonctions qui, lorsqu'elles sont définies dans une classe, peuvent utiliser des attributs comme ici `self.id` qui sont des parametres spécifiques de l'objet.
+Les méthodes sont comme des super fonctions qui, lorsqu'elles sont définies dans une classe, peuvent utiliser des attributs comme ici `self.id` qui sont des paramètres spécifiques de l'objet.
 
 
 ---
 ## Exercice 
 
-- Mettre en place la classe StationMeteo dans le script et executer une procedure d'appel complet avec instanciation d'un objet StationMeteo pour la station 22219003 et la visualisation de la temperature moyenne pour chaques heures sur la periode du 1er au 5 octobre 2018.
+- Mettre en place la classe StationMeteo dans le script et executer une procedure d'appel complète avec instanciation d'un objet StationMeteo pour la station 22219003 et la visualisation de la temperature moyenne pour chaque heure sur la periode du 1er au 5 février 2018.
+
+- Même demande pour la temperature maximale sur la période estivale.
 
 - Ajouter la possibilité d'exporter sous forme de .csv les données  de l'objet station, avec l'option de spécifier une période.
 
 ---
 ## Solution potentielle
 
+```python
+Station_73 = StationMeteo(22219003)
+# Calcul et visu Temperature moyenne 1 au 5 Février
+Station_73.set_period("2018-2-1", "2018-2-5")
+mean_T = Station_73.aggregate("t", methode="mean")
+visualize(range(24), mean_T, axis_labels=["Heure", "Température moyenne"])
+
+#Calcul et visu Temperature maximale periode estivale
+Station_73.set_period("2018-6-1", "2018-8-31")
+max_T = Station_73.aggregate("t", methode="max")
+visualize(range(24), mean_T, axis_labels=["Heure", "Température moyenne"])
+```
+Methode de la classe StationMeteo pour l'export:
+```python
+def export(self, period=False):
+        if not period:
+            self.df.to_csv(f"station_{self.id}.csv")
+        else:
+            self.df_period.to_csv(f"station_{self.id}.csv")
+
+````
 ---
 ## Vers un objet Reseau
 
-Maintenant que l'on a un objet StationMeteo qui répond à nos besoin, 
-si jamais on voulais travailler en parrallèle sur toutes les stations incluses dans le fichier, cela donnerai un script extrement lourd, peu lisible et prompt à contenir des erreurs, comme dans le cadre de l'approche fonctionnelle du départ.
+Bien que notre objet StationMeteo réponde désormais à nos besoins, traiter simultanément toutes les stations du fichier aboutirait à un code complexe, difficile à maintenir et susceptible d’introduire des erreurs, à l’image de l’approche fonctionnelle utilisée au départ.
 
 ---
-# Exercice
+## Exercice
 
-- Creer un objet/classe ReseauMeteo permettant d'avoir accès à n'importe quelle station. L'utilisation d'un objet StationMeteo **modifié** est recommandé...
-- Mettre en place une méthode permettant d'afficher les informations des differentes stations du réseau.
+- Créer un objet/classe ReseauMeteo permettant d'avoir accès à n'importe quelle station. L'utilisation de l'objet StationMeteo est recommandé...
+
+- Mettre en place une méthode permettant d'afficher les informations des différentes stations du réseau.
+
 - Bonus: Ajouter la possibilité de filtrer la période sur tout le réseau
 ---
 ```python
 class Reseau:
-    def __init__(self, file_path):
+    def __init__(self, file_path:str):
         self.file_path = file_path
         self.stations = {}
         self._load_stations()
@@ -259,17 +285,52 @@ class Reseau:
     def _load_stations(self):
         df = pd.read_csv(self.file_path, parse_dates=[4])
         for id_number in df["number_sta"].unique():
-            station_df = df[df["number_sta"] == id_number]
             self.stations[id_number] = Station(id_number, station_df)
 
-    def get_station(self, id_number):
+    def get_station(self, id_number:int):
         return self.stations.get(id_number)
+    
+    def info(self):
+        for id in self.stations:
+            print(10 * "-")
+            self.stations[id].info()
+
+    def set_period(self, start, end):
+        for station in self.stations.values():
+            station.set_period(start, end)
 ```
+
+
+---
 On effectue ici ce que l'on appelle une *composition d'objets*: un objet composé d'autres objets.
+Cela permet de se retrouver avec l'API suivante:
+```python
+Res = Reseau(".../station_2018.csv")
+Res.info()
 
-
+Res.set_period("2018-2-1", "2018-2-5")
+mean_T_A = Res.get_station(28206001).aggregate("t", methode="mean")
+mean_T_B = Res.get_station(85191003).aggregate("t", methode="mean")
+visualize(
+    range(24),
+    abs(np.array(mean_T_A) - np.array(mean_T_B)),
+    axis_labels=["Heure", "Température moyenne"],
+)
+```
 ---
 
 ## Concept d'API progressive
 
+| Nom | Type | Niveau | Situation |
+|---|---|---|---|
+| `Reseau()`| Composed object | Haut | Exploiter un reseau de stations  |
+| `StationMeteo()`| dedicatedObject | Moyen | Exploiter une seule station |
+|  `aggregation()`| dedicated function | Bas | Calculer une donnée statistique |
+|  `print_station_info()`| atomic function | Très bas | Afficher des infos |
+|  `read_data()`| atomic function |Très bas | Lire un fichier csv |
 ---
+
+Cette API est « progressive » : les nouveaux utilisateurs peuvent l’utiliser à un niveau élevé, tandis que les utilisateurs plus avancés, disposant d’une meilleure compréhension, ont accès à des fonctions de plus bas niveau.
+Cette liberté ne nécessite pas de duplication de code. En effet, en relisant le code source, on constate que chaque nouveau niveau est construit par-dessus le précédent.
+
+Ce type d'API progressive est fondamentale dans la programmation orientée objet et en est par conséquent un de ses atouts majeurs.
